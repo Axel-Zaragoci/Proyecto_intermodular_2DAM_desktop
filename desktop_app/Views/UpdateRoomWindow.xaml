@@ -1,0 +1,292 @@
+﻿<UserControl x:Class="desktop_app.Views.UpdateRoomWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="650" d:DesignWidth="1200"
+             Loaded="UserControl_Loaded"
+             FocusManager.FocusedElement="{Binding ElementName=HeaderMain}"
+             Style="{StaticResource UserControlBase}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    </UserControl.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" Style="{StaticResource HeaderWrapper}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock  x:Name="HeaderMain"  Text="Actualizar habitación" Style="{StaticResource HeaderMainTitle}"/>
+                    <TextBlock Text="Rellena los datos y guarda." Style="{StaticResource UpdateIdStyle}"/>
+                </StackPanel>
+
+                <!-- REVIEW AVERAGE IN HEADER -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0"
+                            Visibility="{Binding HasReviewAverage, Converter={StaticResource BoolToVisibility}}">
+                    <Border Background="#FFF8E1" CornerRadius="8" Padding="12,6">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="★" Foreground="#F59E0B" FontSize="18" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="{Binding ReviewAverageText}" FontSize="15" FontWeight="SemiBold"
+                                       Foreground="#92400E" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource FormBorder}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- ===== FILA 0 ===== -->
+                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,12,10">
+                    <Label Content="Número" Style="{StaticResource LabelForm}"/>
+                    <TextBox IsEnabled="False" Style="{StaticResource TextBoxForm}" Text="{Binding Room.RoomNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,12,10">
+                    <Label Content="Tipo" Style="{StaticResource LabelForm}"/>
+                    <ComboBox Style="{StaticResource DropdownStyle}"
+                              SelectedValue="{Binding Room.Type, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                              SelectedValuePath="Tag">
+                        <ComboBoxItem Content="single" Tag="single"/>
+                        <ComboBoxItem Content="double" Tag="double"/>
+                        <ComboBoxItem Content="suite"  Tag="suite"/>
+                        <ComboBoxItem Content="family" Tag="family"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,10">
+                    <Label Content="Precio/noche (€)" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}" Text="{Binding Room.PricePerNight, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <!-- ===== FILA 1 ===== -->
+                <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,12,10">
+                    <Label Content="Máx. huéspedes" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}" IsEnabled="False" Text="{Binding Room.MaxGuests, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,12,10">
+                    <Label Content="Extras (csv)" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}" Text="{Binding ExtrasText, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Grid.Row="1" Margin="0,0,0,10">
+                    <Label Content="Oferta" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}" Text="{Binding Room.Offer, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <!-- ===== FILA 2 ===== -->
+
+
+                <StackPanel Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,2,0,10">
+                    <Label Content="Opciones" Style="{StaticResource LabelForm}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                        <CheckBox Content="Disponible"
+                                  Style="{StaticResource FormCheckBox}"
+                                  IsChecked="{Binding Room.IsAvailable}"/>
+                        <CheckBox Content="Cama extra"
+                                  Style="{StaticResource FormCheckBox}"
+                                  IsChecked="{Binding Room.ExtraBed}"/>
+                        <CheckBox Content="Cuna"
+                                  Style="{StaticResource FormCheckBox}"
+                                  IsChecked="{Binding Room.Crib}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- FOTOS ocupa col 1 y 2 -->
+                <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Margin="150,0,150,10">
+                    <Label Content="Fotos" Style="{StaticResource LabelForm}"/>
+
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- FOTO PRINCIPAL -->
+                        <Border Grid.Column="0" Style="{StaticResource ImageBorderForm}" Margin="0 0 12 0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Width="34" Height="34" CornerRadius="12" Background="#E6F0FF" Margin="0,0,10,0">
+                                    <TextBlock Text="📷" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Principal" Style="{StaticResource ImageTitle}"/>
+                                    <TextBlock Text="{Binding MainImageLabel}" Style="{StaticResource ImageName}"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="2"
+                                        Style="{StaticResource ImageButton}"
+                                        Content="Elegir"
+                                        Command="{Binding PickMainImageLocalCommand}"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- FOTOS EXTRA -->
+                        <Border Grid.Column="1" Style="{StaticResource ImageBorderForm}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Width="34" Height="34" CornerRadius="12" Background="#FFF3E6" Margin="0,0,10,0">
+                                    <TextBlock Text="🖼️" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Extras" Style="{StaticResource ImageTitle}"/>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,0" VerticalAlignment="Center">
+                                        <Border Style="{StaticResource ImageCountBorder}">
+                                            <TextBlock Text="{Binding ExtraImagesLabel}" Foreground="#2B4B7A" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text=" · se suben al Guardar"
+                                                   Foreground="#6B778C" Style="{StaticResource ImageName}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <Button Grid.Column="2"
+                                        Style="{StaticResource ImageButton}"
+                                        Content="Elegir"
+                                        Command="{Binding PickExtraImagesLocalCommand}"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- ===== GALERÍA: IMÁGENES EXISTENTES (elige cuáles borrar) =====
+                         Requiere que el VM exponga:
+                         - ExistingImages : IEnumerable con items que tengan:
+                           * AbsoluteUrl (string)  -> URL completa para BitmapImage
+                           * Url (string)          -> "/uploads/xxx.jpg" (para borrar)
+                           * IsMain (bool)         -> opcional (para badge "Principal")
+                           * OriginalName (string) -> opcional
+                    -->
+                    <Border Style="{StaticResource ImageBorderMsg}">
+                        <StackPanel>
+                                                        <TextBlock Text="Fotos actuales (puedes eliminarlas)" Style="{StaticResource ImageTitle}"/>
+                            <ItemsControl ItemsSource="{Binding ExistingImages}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource ImageViewBorder}">
+                                            <Grid>
+                                                <Border CornerRadius="9">
+                                                    <Border.Background>
+                                                        <ImageBrush ImageSource="{Binding AbsoluteUrl}" Stretch="UniformToFill"/>
+                                                    </Border.Background>
+                                                </Border>
+
+
+                                                <!-- Texto si no hay imagen -->
+                                                <TextBlock Text="Sin imagen"
+                                                           Foreground="#6B7280"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding AbsoluteUrl}" Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding AbsoluteUrl}" Value="">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+
+                                                <!-- Badge "Principal" (opcional si el VM expone IsMain) -->
+                                                <Border Style="{StaticResource MainImageBorder}">
+                                                    <TextBlock Text="Principal" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                </Border>
+
+                                                <!-- Botón borrar -->
+                                                <Button Style="{StaticResource DeleteOverlayBtn}"
+                                                            Content="close"
+                                                        Command="{Binding DataContext.DeleteImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <TextBlock Text="* Al borrar, se elimina del servidor y se quita del modelo de la habitación."
+                                       Foreground="#6B7280"
+                                       FontSize="11"
+                                       Margin="2,2,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ===== FILA 4 ===== -->
+                <StackPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Margin="0,0,0,6">
+                    <Label Content="Descripción" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxDescriptionForm}"
+                             Text="{Binding Room.Description, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            Style="{StaticResource RedReturnBtn}"
+                            Content="Cancelar"
+                            Command="{Binding CancelCommand}"/>
+
+                    <Button Grid.Column="2"
+                            Style="{StaticResource SaveBtn}"
+                            Content="Guardar"
+                            Command="{Binding SaveCommand}"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

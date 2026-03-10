@@ -1,0 +1,181 @@
+﻿<UserControl x:Class="desktop_app.Views.UserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:desktop_app.ViewModels"
+             xmlns:local="clr-namespace:desktop_app.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Style="{StaticResource UserControlBase}">
+    <UserControl.DataContext>
+        <viewmodels:UserViewModel/>
+    </UserControl.DataContext>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource HeaderWrapper}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="CONTROL DE USUARIOS"
+                               Style="{StaticResource HeaderMainTitle}"/>
+
+                    <Button Grid.Column="1"
+                            Content="Crear nuevo"
+                            Command="{Binding CreateNewCommand}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource HeaderNavigateButton}" Cursor="Hand"/>
+                </Grid>
+
+                <Border Grid.Row="1" Background="#F7FAFD" CornerRadius="14" Padding="12" Margin="0,14,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="180"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <Label Content="Nombre / Apellido" Style="{StaticResource LabelForm}"/>
+                            <TextBox Text="{Binding FilterName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <Label Content="DNI" Style="{StaticResource LabelForm}"/>
+                            <TextBox Text="{Binding FilterDni, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4">
+                            <Label Content="Email" Style="{StaticResource LabelForm}"/>
+                            <TextBox Text="{Binding FilterEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="6">
+                            <Label Content="Teléfono" Style="{StaticResource LabelForm}"/>
+                            <TextBox Text="{Binding FilterPhone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="8">
+                            <Label Content="Rol / VIP" Style="{StaticResource LabelForm}"/>
+
+                            <DockPanel LastChildFill="True">
+                                <ComboBox Width="110" ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" Margin="0,0,10,0" Style="{StaticResource DropdownStyle}"/>
+                                <CheckBox Content="VIP" IsThreeState="True" IsChecked="{Binding FilterVip}" VerticalAlignment="Center" Style="{StaticResource FormCheckBox}" ToolTip="Indeterminado = todos | Marcado = solo VIP | Desmarcado = solo NO VIP"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Button Grid.Row="1" Content="Recargar" Command="{Binding ReloadCommand}" Style="{StaticResource SaveBtn}" HorizontalAlignment="Right" Margin="0,0,0,10"/>
+
+        <ListView Grid.Row="2" ItemsSource="{Binding UsersView}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="" HeaderContainerStyle="{StaticResource TableHeader}" Width="65">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource UpdateBookingBtn}" Content="visibility" Command="{Binding DataContext.ViewUserCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Nombre" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding FirstName}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Apellido" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LastName}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="DNI" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Dni}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Email" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Email}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Teléfono" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PhoneDisplay}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Rol" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Rol}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="VIP" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding VipText}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="" HeaderContainerStyle="{StaticResource TableHeader}" Width="65">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource UpdateBookingBtn}" Content="edit" Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="" HeaderContainerStyle="{StaticResource TableHeader}" Width="65">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource DeleteBookingBtn}" Content="delete" Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</UserControl>

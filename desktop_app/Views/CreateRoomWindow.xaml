@@ -1,0 +1,220 @@
+﻿<UserControl x:Class="desktop_app.Views.CreateRoomWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="650" d:DesignWidth="1200"
+             Style="{StaticResource UserControlBase}">
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0"
+                Style="{StaticResource HeaderWrapper}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Crear habitación"
+                               Style="{StaticResource HeaderMainTitle}"/>
+                    <TextBlock Text="Rellena los datos y guarda."
+                               Style="{StaticResource UpdateIdStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- CARD -->
+        <Border Grid.Row="1"
+                Style="{StaticResource FormBorder}">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- ===== FILA 0 ===== -->
+                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,12,10">
+                    <Label Content="Número" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}"
+                 Text="{Binding Room.RoomNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,12,10">
+                    <Label Content="Tipo" Style="{StaticResource LabelForm}"/>
+                    <ComboBox
+                  SelectedValue="{Binding Room.Type, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedValuePath="Tag"
+                  Style="{StaticResource DropdownStyle}">
+                        <ComboBoxItem Content="single" Tag="single"/>
+                        <ComboBoxItem Content="double" Tag="double"/>
+                        <ComboBoxItem Content="suite"  Tag="suite"/>
+                        <ComboBoxItem Content="family" Tag="family"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,10">
+                    <Label Content="Precio/noche (€)" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}"
+                 Text="{Binding Room.PricePerNight, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <!-- ===== FILA 1 ===== -->
+                <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,12,10">
+                    <Label Content="Máx. huéspedes" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}"
+                 Text="{Binding Room.MaxGuests, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <!-- FOTOS ocupa col 1 y 2 -->
+                <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Margin="150,0,150,10">
+                    <Label Content="Fotos" Style="{StaticResource LabelForm}"/>
+
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- FOTO PRINCIPAL -->
+                        <Border Grid.Column="0" Style="{StaticResource ImageBorderForm}" Margin="0 0 12 0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Width="34" Height="34" CornerRadius="12" Background="#E6F0FF" Margin="0,0,10,0">
+                                    <TextBlock Text="📷" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Principal" Style="{StaticResource ImageTitle}"/>
+                                    <TextBlock Text="{Binding MainImageLabel}" Style="{StaticResource ImageName}"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="2"
+                            Style="{StaticResource ImageButton}"
+                            Content="Elegir"
+                            Command="{Binding PickMainImageLocalCommand}"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- FOTOS EXTRA -->
+                        <Border Grid.Column="1" Style="{StaticResource ImageBorderForm}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Width="34" Height="34" CornerRadius="12" Background="#FFF3E6" Margin="0,0,10,0">
+                                    <TextBlock Text="🖼️" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Extras" Style="{StaticResource ImageTitle}"/>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,0" VerticalAlignment="Center">
+                                        <Border Style="{StaticResource ImageCountBorder}">
+                                            <TextBlock Text="{Binding ExtraImagesLabel}" Foreground="#2B4B7A" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text=" · se suben al Guardar" Style="{StaticResource ImageName}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <Button Grid.Column="2"
+                            Style="{StaticResource ImageButton}"
+                            Content="Elegir"
+                            Command="{Binding PickExtraImagesLocalCommand}"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+
+                <!-- ===== FILA 2 ===== -->
+
+                <StackPanel Grid.Column="2" Grid.Row="1" Margin="0,0,0,10">
+                    <Label Content="Oferta" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}"
+                 Text="{Binding Room.Offer, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,12,10">
+                    <Label Content="Extras (csv)" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxForm}"
+                 Text="{Binding ExtrasText, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <!-- ===== FILA 3 ===== -->
+                <StackPanel Grid.Column="1" Grid.Row="2" Margin="0,2,0,10">
+                    <Label Content="Opciones" Style="{StaticResource LabelForm}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                        <CheckBox Content="Disponible"
+                      Style="{StaticResource FormCheckBox}"
+                      IsChecked="{Binding Room.IsAvailable}"/>
+                        
+                        <CheckBox Content="Cama extra"
+                      Style="{StaticResource FormCheckBox}"
+                      IsChecked="{Binding Room.ExtraBed}"/>
+                        
+                        <CheckBox Content="Cuna"
+                      Style="{StaticResource FormCheckBox}"
+                      IsChecked="{Binding Room.Crib}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- ===== FILA 4 ===== -->
+                <StackPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Margin="0,0,0,6">
+                    <Label Content="Descripción" Style="{StaticResource LabelForm}"/>
+                    <TextBox Style="{StaticResource TextBoxDescriptionForm}"
+                 Text="{Binding Room.Description, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+            Style="{StaticResource RedReturnBtn}"
+            Content="Cancelar"
+            Height="32"
+            Width="90"
+            Padding="14,0"
+            Command="{Binding CancelCommand}"/>
+
+                    <Button Grid.Column="2"
+            Style="{StaticResource SaveBtn}"
+            Content="Guardar"
+            Height="32"
+            Width="90"
+            Padding="16,0"
+            Command="{Binding SaveCommand}"/>
+                </Grid>
+            </Grid>
+            
+        </Border>
+    </Grid>
+</UserControl>
