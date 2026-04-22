@@ -39,6 +39,30 @@ namespace desktop_app.Models
         [JsonPropertyName("totalNights")]
         public int TotalNights { get; set; }
 
+        [JsonPropertyName("invoiceId")]
+        public string InvoiceId { get; set; } = "";
+        
+        [JsonPropertyName("reminder_sent_24h")]
+        public bool ReminderSent24H { get; set; } = false;
+        
+        [JsonPropertyName("reminder_sent_48h")]
+        public bool ReminderSent48H { get; set; } = false;
+        
+        [JsonPropertyName("reminder_24h_name")]
+        public string ReminderName24H { get; set; } = "";
+        
+        [JsonPropertyName("reminder_48h_name")]
+        public string ReminderName48H { get; set; } = "";
+        
+        [JsonPropertyName("paymentStatus")]
+        public string PaymentStatus { get; set; } = "Pendiente";
+        
+        [JsonPropertyName("totalPaid")]
+        public decimal TotalPaid { get; set; } = 0;
+        
+        [JsonPropertyName("createdVia")]
+        public string CreatedVia { get; set; } = "Online";
+        
         [JsonIgnore] 
         public string RoomNumber { get; set; } = "";
 
@@ -47,6 +71,9 @@ namespace desktop_app.Models
 
         [JsonIgnore] 
         public string ClientDni { get; set; } = "";
+        
+        [JsonIgnore]
+        public bool CanGenerateInvoice => TotalPaid == TotalPrice;
         
         public BookingModel Clone()
         {

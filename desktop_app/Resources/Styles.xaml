@@ -1113,4 +1113,42 @@
             </Grid>
         </Border>
     </DataTemplate>
+    
+    
+    <Style x:Key="CreateInvoiceBtn" TargetType="Button">
+        <Setter Property="Background" Value="#007bff"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="#007bff"/>
+        <Setter Property="Padding" Value="12 6"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="400"/>
+        <Setter Property="FontFamily" Value="/Resources/#Material Icons Outlined"/>
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+                        
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#0069d9"/>
+                <Setter Property="BorderBrush" Value="#0062cc"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#0062cc"/>
+                <Setter Property="BorderBrush" Value="#005cbf"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="#007bff"/>
+                <Setter Property="BorderBrush" Value="#007bff"/>
+                <Setter Property="Opacity" Value="0.65"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

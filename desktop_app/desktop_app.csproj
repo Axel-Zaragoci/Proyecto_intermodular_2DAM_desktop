@@ -28,6 +28,10 @@
     <Resource Include="Resources\Images\userIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <None Remove="Resources\Images\invoiceIcon.png" />
+    <Resource Include="Resources\Images\invoiceIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
