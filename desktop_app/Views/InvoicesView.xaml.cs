@@ -20,8 +20,6 @@ public partial class InvoicesView : UserControl
     /// </param>
     private void ListView_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        Console.WriteLine("Size Changed ejecutado");
-        
         if (sender is not ListView listView || listView.View is not GridView gridView)
             return;
 

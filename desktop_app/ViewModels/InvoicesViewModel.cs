@@ -1,5 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
+using System.Windows.Input;
+using desktop_app.Commands;
 using desktop_app.Models;
 using desktop_app.Services;
 
@@ -11,13 +14,61 @@ public class InvoicesViewModel : ViewModelBase
 
     public ObservableCollection<BookingModel> OtherBookings { get; }
     
+    public ICommand DownloadInvoiceCommand { get; }
+    public ICommand AddInvoiceCommand { get; }
+    public ICommand SendInvoiceCommand { get; }
+    public ICommand ReloadDataCommand { get; }
+    
     public InvoicesViewModel()
     {
         InvoicedBookings = new ObservableCollection<BookingModel>();
         OtherBookings = new ObservableCollection<BookingModel>();
         _ = LoadBookingsWithInvoiceAsync();
+        DownloadInvoiceCommand = new AsyncRelayCommand<BookingModel>(DownloadInvoiceAsync);
+        ReloadDataCommand = new AsyncRelayCommand(LoadBookingsWithInvoiceAsync);
+        SendInvoiceCommand = new AsyncRelayCommand<BookingModel>(SendInvoiceAsync);
+        AddInvoiceCommand = new AsyncRelayCommand<BookingModel>(AddInvoiceAsync);
     }
 
+    public async Task AddInvoiceAsync(BookingModel booking)
+    {
+        await DownloadInvoiceAsync(booking);
+        await LoadBookingsWithInvoiceAsync();
+    }
+    
+    private async Task DownloadInvoiceAsync(BookingModel booking)
+    {
+        try
+        {
+            InvoiceService service = new();
+
+            byte[] pdfBytes = await service.DownloadPdfAsync(booking);
+
+            if (pdfBytes != null && pdfBytes.Length > 0)
+            {
+                string tempFile = Path.Combine(Path.GetTempPath(), booking.InvoiceId);
+            
+                File.WriteAllBytes(tempFile, pdfBytes);
+            
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = tempFile,
+                    UseShellExecute = true
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al mostrar factura: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async Task SendInvoiceAsync(BookingModel booking)
+    {
+        InvoiceService service = new();
+        await service.SendPdfAsync(booking);
+    }
+    
     /// <summary>
     /// Método que carga las reservas
     /// Obtiene todas las reservas y vacía la lista para evitar duplicados
