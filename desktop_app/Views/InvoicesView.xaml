@@ -25,7 +25,7 @@
         <Border Style="{StaticResource HeaderWrapper}">
             <DockPanel LastChildFill="False" VerticalAlignment="Center">
                 <TextBlock Style="{StaticResource HeaderMainTitle}" DockPanel.Dock="Left" Text="Facturas"/>
-                <Button Style="{StaticResource HeaderNavigateButton}" Content="Configurar hotel" DockPanel.Dock="Right"/>
+                <Button Style="{StaticResource HeaderNavigateButton}" Content="Configurar hotel" DockPanel.Dock="Right" Command="{Binding NavigateToHotelFormCommand}"/>
             </DockPanel>
         </Border>
         

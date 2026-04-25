@@ -13,6 +13,9 @@ public class HotelModel
     [JsonPropertyName("address")]
     public string address { get; set; }
     
+    [JsonPropertyName("postalCode")]
+    public string postalCode { get; set; }
+    
     [JsonPropertyName("city")]
     public string city { get; set; }
     
@@ -24,4 +27,16 @@ public class HotelModel
     
     [JsonPropertyName("phone")]
     public string phone { get; set; }
+
+    public override string ToString()
+    {
+        return "Hotel " + this.cif + ": \n" +
+               "Nombre: " +  this.name + "\n" +
+               "Dirección: " + this.address + "\n" +
+               "Código postal: " + this.postalCode + "\n" +
+               "Ciudad: " + this.city + "\n" +
+               "País: " + this.country + "\n" +
+               "Email: " + this.email + "\n" +
+               "Teléfono: " + this.phone;
+    }
 }

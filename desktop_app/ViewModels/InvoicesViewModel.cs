@@ -5,6 +5,7 @@ using System.Windows.Input;
 using desktop_app.Commands;
 using desktop_app.Models;
 using desktop_app.Services;
+using desktop_app.Views;
 
 namespace desktop_app.ViewModels;
 
@@ -18,6 +19,7 @@ public class InvoicesViewModel : ViewModelBase
     public ICommand AddInvoiceCommand { get; }
     public ICommand SendInvoiceCommand { get; }
     public ICommand ReloadDataCommand { get; }
+    public ICommand NavigateToHotelFormCommand { get; }
     
     public InvoicesViewModel()
     {
@@ -28,9 +30,15 @@ public class InvoicesViewModel : ViewModelBase
         ReloadDataCommand = new AsyncRelayCommand(LoadBookingsWithInvoiceAsync);
         SendInvoiceCommand = new AsyncRelayCommand<BookingModel>(SendInvoiceAsync);
         AddInvoiceCommand = new AsyncRelayCommand<BookingModel>(AddInvoiceAsync);
+        NavigateToHotelFormCommand = new RelayCommand(NavigateToHotelForm);
     }
 
-    public async Task AddInvoiceAsync(BookingModel booking)
+    private void NavigateToHotelForm(object? parameter)
+    {
+        NavigationService.Instance.NavigateTo<FormHotelView>();
+    }
+    
+    private async Task AddInvoiceAsync(BookingModel booking)
     {
         await DownloadInvoiceAsync(booking);
         await LoadBookingsWithInvoiceAsync();

@@ -7,21 +7,22 @@ namespace desktop_app.Services;
 
 public class HotelService
 {
-    public static async Task<HotelModel> GetHotelAsync()
+    public async Task<HotelModel> GetHotelAsync()
     {
-        return (
-            await (
-                await CreateResponse("", new Object(), HttpMethod.Get)).Content.ReadFromJsonAsync<HotelModel>()
-        ) ?? new HotelModel();
+        var response = await CreateResponse("", new Object(), HttpMethod.Get);
+        var content = response.Content;
+        Console.WriteLine(content.ReadAsStringAsync().Result);
+        return await content.ReadFromJsonAsync<HotelModel>();
     }
 
-    public static async Task<HotelModel?> UpdateHotelAsync(HotelModel hotel)
+    public async Task<HotelModel?> UpdateHotelAsync(HotelModel hotel)
     {
         var payload = new
         {
             name = hotel.name,
             cif = hotel.cif,
             address = hotel.address,
+            postalCode = hotel.postalCode,
             city = hotel.city,
             country = hotel.country,
             email = hotel.email,
@@ -36,7 +37,7 @@ public class HotelService
     
     private static async Task<HttpResponseMessage> CreateResponse(string endpoint, object payload, HttpMethod method)
     {
-        string url = $"{ApiService.BaseUrl}booking/{endpoint}";
+        string url = $"{ApiService.BaseUrl}hotel/{endpoint}";
             
         var request = new HttpRequestMessage(method, url)
         {
@@ -55,7 +56,7 @@ public class HotelService
         if (!response.IsSuccessStatusCode)
         {
             string error = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine("Error en la API de booking: " + error);
+            Console.WriteLine("Error en la API de hotel: " + error);
             var value = JsonConvert.DeserializeObject<Dictionary<string, string>>(error);
             if (value != null)
             {
