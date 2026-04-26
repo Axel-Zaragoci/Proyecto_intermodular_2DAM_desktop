@@ -16,12 +16,22 @@ namespace desktop_app.Services
         /// </returns>
         public static async Task<List<BookingModel>> GetAllBookingsAsync()
         {
-            return (
-                await (
-                    await CreateResponse("", new Object(), HttpMethod.Get)).Content.ReadFromJsonAsync<List<BookingModel>>()
-                ) ?? new List<BookingModel>();
+            var response = await CreateResponse("", new Object(), HttpMethod.Get);
+            var content = await response.Content.ReadAsStringAsync();
+    
+            var bookings = JsonConvert.DeserializeObject<List<BookingModel>>(content);
+    
+            return bookings ?? new List<BookingModel>();
         }
 
+        public static async Task<BookingModel> GetBookingAsync(string bookingId)
+        {
+            var response = await CreateResponse(bookingId, new Object(), HttpMethod.Get);
+            var content = await response.Content.ReadAsStringAsync();
+    
+            var booking = JsonConvert.DeserializeObject<BookingModel>(content);
+            return booking ?? new BookingModel();
+        }
         
         /// <summary>
         /// Borra una reserva

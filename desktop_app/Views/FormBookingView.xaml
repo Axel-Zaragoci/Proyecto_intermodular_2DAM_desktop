@@ -36,6 +36,7 @@
         <StackPanel Grid.Column="0" Grid.Row="1" Style="{StaticResource BtnWrapper}">
             <Button Content="Volver" Style="{StaticResource RedReturnBtn}" Command="{Binding ReturnCommand}"/>
             <Button Content="Guardar" Style="{StaticResource SaveBtn}" Command="{Binding SaveCommand}"/>
+            <Button Content="Factura" Style="{StaticResource SaveBtn}" Command="{Binding InvoiceCommand}" CommandParameter="{Binding Booking}" IsEnabled="{Binding InvoiceEnable}"/>
             <Button Content="Cancelar" Style="{StaticResource CancelBtn}" Command="{Binding CancelCommand}" IsEnabled="{Binding Disabled}"/>
         </StackPanel>
         

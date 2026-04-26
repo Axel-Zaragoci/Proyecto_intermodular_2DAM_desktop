@@ -48,13 +48,11 @@ public class InvoicesViewModel : ViewModelBase
     {
         try
         {
-            InvoiceService service = new();
+            byte[] pdfBytes = await InvoiceService.DownloadPdfAsync(booking);
 
-            byte[] pdfBytes = await service.DownloadPdfAsync(booking);
-
-            if (pdfBytes != null && pdfBytes.Length > 0)
+            if (pdfBytes.Length > 0)
             {
-                string tempFile = Path.Combine(Path.GetTempPath(), booking.InvoiceId);
+                string tempFile = await GetTempFileRoute(booking);
             
                 File.WriteAllBytes(tempFile, pdfBytes);
             
@@ -73,8 +71,7 @@ public class InvoicesViewModel : ViewModelBase
 
     private async Task SendInvoiceAsync(BookingModel booking)
     {
-        InvoiceService service = new();
-        await service.SendPdfAsync(booking);
+        await InvoiceService.SendPdfAsync(booking);
     }
     
     /// <summary>
@@ -110,6 +107,19 @@ public class InvoicesViewModel : ViewModelBase
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async Task<String> GetTempFileRoute(BookingModel booking)
+    {
+        if (booking.InvoiceId != "")
+        {
+            return Path.Combine(Path.GetTempPath(), booking.InvoiceId);
+        }
+        else
+        {
+            BookingModel bookingWithInvoice = await BookingService.GetBookingAsync(booking.Id);
+            return Path.Combine(Path.GetTempPath(), bookingWithInvoice.InvoiceId);
         }
     }
 }

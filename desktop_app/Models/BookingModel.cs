@@ -91,6 +91,14 @@ namespace desktop_app.Models
                 Status = Status,
                 Guests = Guests,
                 TotalNights = TotalNights,
+                InvoiceId = InvoiceId,
+                ReminderSent24H = ReminderSent24H,
+                ReminderSent48H = ReminderSent48H,
+                ReminderName24H = ReminderName24H,
+                ReminderName48H = ReminderName48H,
+                PaymentStatus = PaymentStatus,
+                TotalPaid = TotalPaid,
+                CreatedVia = CreatedVia,
                 RoomNumber = RoomNumber,
                 ClientName = ClientName,
                 ClientDni = ClientDni
@@ -112,7 +120,15 @@ namespace desktop_app.Models
                    + "Precio total: " + this.TotalPrice + "€\n"
                    + "Precio por noche: " + this.PricePerNight + "€\n"
                    + "Total de noches: " + this.TotalNights + "\n"
-                   + "Cantidad de huéspedes: " + this.Guests;
+                   + "Cantidad de huéspedes: " + this.Guests + "\n"
+                   + "ID de factura: " + this.InvoiceId + "\n"
+                   + "ReminderSent24H: " + this.ReminderSent24H + "\n"
+                   + "ReminderSent48H: " + this.ReminderSent48H + "\n"
+                   + "ReminderName24H: " + this.ReminderName24H + "\n"
+                   + "ReminderName48H: " + this.ReminderName48H + "\n"
+                   + "PaymentStatus: " + this.PaymentStatus + "\n"
+                   + "TotalPaid: " + this.TotalPaid + "\n"
+                   + "CreatedVia: " + this.CreatedVia;
         }
     }
 }

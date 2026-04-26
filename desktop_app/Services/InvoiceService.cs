@@ -8,7 +8,7 @@ namespace desktop_app.Services;
 
 public class InvoiceService
 {
-    public async Task<byte[]> DownloadPdfAsync(BookingModel booking)
+    public static async Task<byte[]> DownloadPdfAsync(BookingModel booking)
     {
         var response = await CreateResponse($"{booking.Id}/invoice", new Object(), HttpMethod.Get);
 
@@ -23,7 +23,7 @@ public class InvoiceService
         return pdfBytes;
     }
 
-    public async Task SendPdfAsync(BookingModel booking)
+    public static async Task SendPdfAsync(BookingModel booking)
     {
         var response = await CreateResponse($"{booking.Id}/sendInvoice", new Object(), HttpMethod.Get);
         

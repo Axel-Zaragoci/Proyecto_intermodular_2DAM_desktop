@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using desktop_app.Commands;
@@ -27,6 +28,15 @@ namespace desktop_app.ViewModels
         /// Devuelve true para nuevas reservas, false para reservas existentes.
         /// </summary>
         public bool Enabled => string.IsNullOrEmpty(Booking.Id);
+
+        public bool InvoiceEnable 
+        { 
+            get 
+            {
+                var result = Math.Abs(Booking.TotalPaid - Booking.TotalPrice) < 0.01m;
+                return result;
+            }
+        }
         
         /// <summary>
         /// Indica si los campos del formulario deben estar deshabilitados.
@@ -45,6 +55,24 @@ namespace desktop_app.ViewModels
             {
                 _booking = value;
                 OnPropertyChanged();
+                
+                if (_booking != null)
+                {
+                    var priceWithDiscount = _booking.PricePerNight ?? 0;
+                    var currentOffer = _booking.Offer ?? 0;
+            
+                    if (currentOffer > 0)
+                    {
+                        _basePricePerNight = priceWithDiscount / (1 - currentOffer / 100m);
+                    }
+                    else
+                    {
+                        _basePricePerNight = priceWithDiscount;
+                    }
+                    OnPropertyChanged(nameof(BasePricePerNight));
+                    OnPropertyChanged(nameof(PricePerNight));
+                    OnPropertyChanged(nameof(InvoiceEnable));
+                }
                 RefreshAll();
             }
         }
@@ -122,8 +150,9 @@ namespace desktop_app.ViewModels
 
         public void ChangeRoomData(String roomNumber)
         {
-            PricePerNight = _rooms.First(room => room.RoomNumber == roomNumber).PricePerNight ?? 0;
-            Offer = _rooms.First(room => room.RoomNumber == roomNumber).Offer ?? 0;
+            var room = _rooms.First(room => room.RoomNumber == roomNumber);
+            BasePricePerNight = room.PricePerNight ?? 0;
+            Offer = room.Offer ?? 0;
         }
 
         public DateTime CheckInDate
@@ -164,15 +193,25 @@ namespace desktop_app.ViewModels
             }
         }
 
-        /// <summary>
-        /// Obtiene o establece el precio por noche de la habitación seleccionada.
-        /// </summary>
-        public decimal PricePerNight
+        private decimal _basePricePerNight;
+
+        public decimal BasePricePerNight
         {
-            get => Booking.PricePerNight ?? 0;
+            get => _basePricePerNight;
             set
             {
-                Booking.PricePerNight = value;
+                _basePricePerNight = value;
+                OnPropertyChanged(nameof(PricePerNight));
+                RecalculateTotal();
+            }
+        }
+
+        public decimal PricePerNight
+        {
+            get => _basePricePerNight * (1 - Offer / 100) * 1.1m;
+            set
+            {
+                _basePricePerNight = value / 1.1m / (1 - Offer / 100);
                 OnPropertyChanged();
                 RecalculateTotal();
             }
@@ -223,6 +262,8 @@ namespace desktop_app.ViewModels
         /// </summary>
         public ICommand SaveCommand { get; }
         
+        public ICommand InvoiceCommand { get; }
+        
         /// <summary>
         /// Comando para cancelar la reserva.
         /// </summary>
@@ -242,7 +283,8 @@ namespace desktop_app.ViewModels
 
             SaveCommand = new RelayCommand(async _ => await Save());
             CancelCommand = new RelayCommand(async _ => await Cancel());
-
+            InvoiceCommand = new AsyncRelayCommand<BookingModel>(DownloadInvoiceAsync);
+            
             LoadClients();
             LoadRooms();
         }
@@ -261,10 +303,9 @@ namespace desktop_app.ViewModels
 
             TotalNights = (CheckOutDate.Date - CheckInDate.Date).Days;
 
-            var basePrice = TotalNights * PricePerNight;
-            var discount = basePrice * (Offer / 100m);
-
-            TotalPrice = basePrice - discount;
+            var pricePerNightWithDiscount = _basePricePerNight * (1 - Offer / 100m);
+            var subtotal = TotalNights * pricePerNightWithDiscount;
+            TotalPrice = subtotal * 1.1m;
         }
         
         /// <summary>
@@ -284,9 +325,12 @@ namespace desktop_app.ViewModels
             OnPropertyChanged(nameof(PayDate));
 
             OnPropertyChanged(nameof(PricePerNight));
+            OnPropertyChanged(nameof(BasePricePerNight));
             OnPropertyChanged(nameof(Offer));
             OnPropertyChanged(nameof(TotalPrice));
             OnPropertyChanged(nameof(TotalNights));
+            
+            OnPropertyChanged(nameof(InvoiceEnable));
         }
 
         /// <summary>
@@ -346,5 +390,43 @@ namespace desktop_app.ViewModels
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        
+        private async Task DownloadInvoiceAsync(BookingModel booking)
+    {
+        try
+        {
+            byte[] pdfBytes = await InvoiceService.DownloadPdfAsync(booking);
+
+            if (pdfBytes.Length > 0)
+            {
+                string tempFile = await GetTempFileRoute(booking);
+            
+                File.WriteAllBytes(tempFile, pdfBytes);
+            
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = tempFile,
+                    UseShellExecute = true
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al mostrar factura: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async Task<String> GetTempFileRoute(BookingModel booking)
+    {
+        if (booking.InvoiceId != "")
+        {
+            return Path.Combine(Path.GetTempPath(), booking.InvoiceId);
+        }
+        else
+        {
+            BookingModel bookingWithInvoice = await BookingService.GetBookingAsync(booking.Id);
+            return Path.Combine(Path.GetTempPath(), bookingWithInvoice.InvoiceId);
+        }
+    }
     }
 }
