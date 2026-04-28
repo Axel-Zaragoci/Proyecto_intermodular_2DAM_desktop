@@ -1,52 +1,80 @@
-﻿using System.Text.Json.Serialization;
-    
+﻿using Newtonsoft.Json;
+
 namespace desktop_app.Models
 {
     public class BookingModel
     {
-        [JsonPropertyName("_id")] 
+        [JsonProperty("_id")]
         public string Id { get; set; } = "";
         
-        [JsonPropertyName("room")]
+        [JsonProperty("room")]
         public string Room { get; set; }
         
-        [JsonPropertyName("client")]
+        [JsonProperty("client")]
         public string Client { get; set; }
 
-        [JsonPropertyName("checkInDate")]
+        [JsonProperty("checkInDate")]
         public DateTime CheckInDate { get; set; } = DateTime.Now;
         
-        [JsonPropertyName("checkOutDate")]
-        public  DateTime CheckOutDate { get; set; } = DateTime.Now;
+        [JsonProperty("checkOutDate")]
+        public DateTime CheckOutDate { get; set; } = DateTime.Now;
 
-        [JsonPropertyName("payDate")] public DateTime PayDate { get; set; } = DateTime.Now;
+        [JsonProperty("payDate")]
+        public DateTime PayDate { get; set; } = DateTime.Now;
         
-        [JsonPropertyName("totalPrice")]
+        [JsonProperty("totalPrice")]
         public decimal TotalPrice { get; set; }
 
-        [JsonPropertyName("pricePerNight")]
+        [JsonProperty("pricePerNight")]
         public decimal? PricePerNight { get; set; }
 
-        [JsonPropertyName("offer")]
+        [JsonProperty("offer")]
         public decimal? Offer { get; set; }
 
-        [JsonPropertyName("status")]
+        [JsonProperty("status")]
         public string Status { get; set; }
 
-        [JsonPropertyName("guests")] 
+        [JsonProperty("guests")]
         public int Guests { get; set; } = 0;
 
-        [JsonPropertyName("totalNights")]
+        [JsonProperty("totalNights")]
         public int TotalNights { get; set; }
 
-        [JsonIgnore] 
+        [JsonProperty("invoiceId")]
+        public string InvoiceId { get; set; } = "";
+        
+        [JsonProperty("reminder_sent_24h")]
+        public bool ReminderSent24H { get; set; } = false;
+        
+        [JsonProperty("reminder_sent_48h")]
+        public bool ReminderSent48H { get; set; } = false;
+        
+        [JsonProperty("reminder_24h_name")]
+        public string ReminderName24H { get; set; } = "";
+        
+        [JsonProperty("reminder_48h_name")]
+        public string ReminderName48H { get; set; } = "";
+        
+        [JsonProperty("paymentStatus")]
+        public string PaymentStatus { get; set; } = "Pendiente";
+        
+        [JsonProperty("totalPaid")]
+        public decimal TotalPaid { get; set; } = 0;
+        
+        [JsonProperty("createdVia")]
+        public string CreatedVia { get; set; } = "Online";
+        
+        [JsonIgnore]
         public string RoomNumber { get; set; } = "";
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public string ClientName { get; set; } = "Por conseguir";
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public string ClientDni { get; set; } = "";
+        
+        [JsonIgnore]
+        public bool CanGenerateInvoice => TotalPaid == TotalPrice;
         
         public BookingModel Clone()
         {
@@ -64,6 +92,14 @@ namespace desktop_app.Models
                 Status = Status,
                 Guests = Guests,
                 TotalNights = TotalNights,
+                InvoiceId = InvoiceId,
+                ReminderSent24H = ReminderSent24H,
+                ReminderSent48H = ReminderSent48H,
+                ReminderName24H = ReminderName24H,
+                ReminderName48H = ReminderName48H,
+                PaymentStatus = PaymentStatus,
+                TotalPaid = TotalPaid,
+                CreatedVia = CreatedVia,
                 RoomNumber = RoomNumber,
                 ClientName = ClientName,
                 ClientDni = ClientDni
@@ -85,7 +121,15 @@ namespace desktop_app.Models
                    + "Precio total: " + this.TotalPrice + "€\n"
                    + "Precio por noche: " + this.PricePerNight + "€\n"
                    + "Total de noches: " + this.TotalNights + "\n"
-                   + "Cantidad de huéspedes: " + this.Guests;
+                   + "Cantidad de huéspedes: " + this.Guests + "\n"
+                   + "ID de factura: " + this.InvoiceId + "\n"
+                   + "ReminderSent24H: " + this.ReminderSent24H + "\n"
+                   + "ReminderSent48H: " + this.ReminderSent48H + "\n"
+                   + "ReminderName24H: " + this.ReminderName24H + "\n"
+                   + "ReminderName48H: " + this.ReminderName48H + "\n"
+                   + "PaymentStatus: " + this.PaymentStatus + "\n"
+                   + "TotalPaid: " + this.TotalPaid + "\n"
+                   + "CreatedVia: " + this.CreatedVia;
         }
     }
 }

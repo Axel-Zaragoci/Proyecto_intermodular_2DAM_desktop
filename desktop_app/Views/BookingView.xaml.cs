@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using desktop_app.ViewModels;
 
 namespace desktop_app.Views
 {
