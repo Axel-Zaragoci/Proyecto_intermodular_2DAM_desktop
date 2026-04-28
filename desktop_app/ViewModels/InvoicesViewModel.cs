@@ -94,7 +94,7 @@ public class InvoicesViewModel : ViewModelBase
                 booking.ClientName = u.FirstName + " " + u.LastName;
                 RoomModel? room = await RoomService.GetRoomByIdAsync(booking.Room);
                 booking.RoomNumber = room != null ? room.RoomNumber : "Error";
-                if (booking.InvoiceId != "")
+                if (booking.InvoiceId != "" && booking.TotalPaid == booking.TotalPrice)
                 {
                     InvoicedBookings.Add(booking);
                 }
@@ -116,10 +116,7 @@ public class InvoicesViewModel : ViewModelBase
         {
             return Path.Combine(Path.GetTempPath(), booking.InvoiceId);
         }
-        else
-        {
-            BookingModel bookingWithInvoice = await BookingService.GetBookingAsync(booking.Id);
-            return Path.Combine(Path.GetTempPath(), bookingWithInvoice.InvoiceId);
-        }
+        var bookingWithInvoice = await BookingService.GetBookingAsync(booking.Id);
+        return Path.Combine(Path.GetTempPath(), bookingWithInvoice.InvoiceId);
     }
 }

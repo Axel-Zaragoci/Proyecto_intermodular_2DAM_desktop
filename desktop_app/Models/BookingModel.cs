@@ -1,75 +1,76 @@
-﻿using System.Text.Json.Serialization;
-    
+﻿using Newtonsoft.Json;
+
 namespace desktop_app.Models
 {
     public class BookingModel
     {
-        [JsonPropertyName("_id")] 
+        [JsonProperty("_id")]
         public string Id { get; set; } = "";
         
-        [JsonPropertyName("room")]
+        [JsonProperty("room")]
         public string Room { get; set; }
         
-        [JsonPropertyName("client")]
+        [JsonProperty("client")]
         public string Client { get; set; }
 
-        [JsonPropertyName("checkInDate")]
+        [JsonProperty("checkInDate")]
         public DateTime CheckInDate { get; set; } = DateTime.Now;
         
-        [JsonPropertyName("checkOutDate")]
-        public  DateTime CheckOutDate { get; set; } = DateTime.Now;
+        [JsonProperty("checkOutDate")]
+        public DateTime CheckOutDate { get; set; } = DateTime.Now;
 
-        [JsonPropertyName("payDate")] public DateTime PayDate { get; set; } = DateTime.Now;
+        [JsonProperty("payDate")]
+        public DateTime PayDate { get; set; } = DateTime.Now;
         
-        [JsonPropertyName("totalPrice")]
+        [JsonProperty("totalPrice")]
         public decimal TotalPrice { get; set; }
 
-        [JsonPropertyName("pricePerNight")]
+        [JsonProperty("pricePerNight")]
         public decimal? PricePerNight { get; set; }
 
-        [JsonPropertyName("offer")]
+        [JsonProperty("offer")]
         public decimal? Offer { get; set; }
 
-        [JsonPropertyName("status")]
+        [JsonProperty("status")]
         public string Status { get; set; }
 
-        [JsonPropertyName("guests")] 
+        [JsonProperty("guests")]
         public int Guests { get; set; } = 0;
 
-        [JsonPropertyName("totalNights")]
+        [JsonProperty("totalNights")]
         public int TotalNights { get; set; }
 
-        [JsonPropertyName("invoiceId")]
+        [JsonProperty("invoiceId")]
         public string InvoiceId { get; set; } = "";
         
-        [JsonPropertyName("reminder_sent_24h")]
+        [JsonProperty("reminder_sent_24h")]
         public bool ReminderSent24H { get; set; } = false;
         
-        [JsonPropertyName("reminder_sent_48h")]
+        [JsonProperty("reminder_sent_48h")]
         public bool ReminderSent48H { get; set; } = false;
         
-        [JsonPropertyName("reminder_24h_name")]
+        [JsonProperty("reminder_24h_name")]
         public string ReminderName24H { get; set; } = "";
         
-        [JsonPropertyName("reminder_48h_name")]
+        [JsonProperty("reminder_48h_name")]
         public string ReminderName48H { get; set; } = "";
         
-        [JsonPropertyName("paymentStatus")]
+        [JsonProperty("paymentStatus")]
         public string PaymentStatus { get; set; } = "Pendiente";
         
-        [JsonPropertyName("totalPaid")]
+        [JsonProperty("totalPaid")]
         public decimal TotalPaid { get; set; } = 0;
         
-        [JsonPropertyName("createdVia")]
+        [JsonProperty("createdVia")]
         public string CreatedVia { get; set; } = "Online";
         
-        [JsonIgnore] 
+        [JsonIgnore]
         public string RoomNumber { get; set; } = "";
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public string ClientName { get; set; } = "Por conseguir";
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public string ClientDni { get; set; } = "";
         
         [JsonIgnore]
