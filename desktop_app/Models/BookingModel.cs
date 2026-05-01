@@ -76,6 +76,12 @@ namespace desktop_app.Models
         [JsonIgnore]
         public bool CanGenerateInvoice => TotalPaid == TotalPrice;
         
+        [JsonIgnore]
+        public DateTime Hour24H => CheckInDate.AddDays(-1);
+        
+        [JsonIgnore] 
+        public DateTime Hour48H => CheckInDate.AddDays(-2);
+        
         public BookingModel Clone()
         {
             return new BookingModel
@@ -129,7 +135,10 @@ namespace desktop_app.Models
                    + "ReminderName48H: " + this.ReminderName48H + "\n"
                    + "PaymentStatus: " + this.PaymentStatus + "\n"
                    + "TotalPaid: " + this.TotalPaid + "\n"
-                   + "CreatedVia: " + this.CreatedVia;
+                   + "CreatedVia: " + this.CreatedVia + "\n"
+                   + "CanGenerateInvoice: " + this.CanGenerateInvoice + "\n"
+                   + "Hour24H: " + this.Hour24H + "\n"
+                   + "Hour48H: " + this.Hour48H;
         }
     }
 }

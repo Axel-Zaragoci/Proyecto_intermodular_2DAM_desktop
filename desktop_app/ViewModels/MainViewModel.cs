@@ -30,5 +30,10 @@ namespace desktop_app.ViewModels
         /// Comando que navega a la vista de facturas
         /// </summary>
         public ICommand ShowInvoicesCommand { get; } = new RelayCommand(_ => NavigationService.Instance.NavigateTo<InvoicesView>());
+
+        /// <summary>
+        /// Comando que navega a la vista de notificaciones
+        /// </summary>
+        public ICommand ShowNotificationsCommand { get; } = new RelayCommand(_ => NavigationService.Instance.NavigateTo<NotificationsView>());
     }
 }
