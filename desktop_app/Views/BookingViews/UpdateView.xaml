@@ -107,7 +107,6 @@
         
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0 30 0 0">
             <Button Content="Guardar" Style="{StaticResource SaveBtn}" Margin="0 0 30 0" Command="{Binding CreateBookingCommand}"/>
-            <Button Content="Cancelar reserva" Style="{StaticResource CancelBtn}" Command="{Binding CancelBookingCommand}" IsEnabled="{Binding CancelEnabled}"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -57,8 +57,6 @@ public class UpdateBookingFormViewModel :  ViewModelBase
     public bool Enabled => string.IsNullOrEmpty(Booking.Id);
     
     public bool Disabled => !Enabled;
-    
-    public bool CancelEnabled => BookingId != "" && Booking.Status != "Cancelada";
 
     private ObservableCollection<UserModel> _clients;
     public ObservableCollection<UserModel> Clients
@@ -231,7 +229,6 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         _ = LoadClients();
         _ = LoadRooms();
         CreateBookingCommand = new AsyncRelayCommand(Save);
-        CancelBookingCommand = new AsyncRelayCommand(Cancel);
     }
     
     
@@ -269,7 +266,6 @@ public class UpdateBookingFormViewModel :  ViewModelBase
     {
         OnPropertyChanged(nameof(Enabled));
         OnPropertyChanged(nameof(Disabled));
-        OnPropertyChanged(nameof(CancelEnabled));
 
         OnPropertyChanged(nameof(ClientDni));
         OnPropertyChanged(nameof(RoomNumber));
@@ -292,10 +288,6 @@ public class UpdateBookingFormViewModel :  ViewModelBase
     
     public ICommand CreateBookingCommand { get; set; }
     
-    public ICommand CancelBookingCommand { get; set; }
-    
-    
-    
     
     private async Task Save()
     {
@@ -317,29 +309,6 @@ public class UpdateBookingFormViewModel :  ViewModelBase
             {
                 await BookingService.UpdateBookingAsync(Booking);
             }
-            await BookingEvents.RaiseBookingChanged();
-            NavigationService.Instance.NavigateTo<BookingView>();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-    
-    private async Task Cancel()
-    {
-        if (Booking.Status == "Cancelada")
-        {
-            MessageBox.Show("Esta reserva ya está cancelada");
-            return;
-        }
-
-        if (MessageBox.Show("¿Cancelar reserva?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
-            return;
-
-        try
-        {
-            await BookingService.CancelBookingAsync(Booking.Id);
             await BookingEvents.RaiseBookingChanged();
             NavigationService.Instance.NavigateTo<BookingView>();
         }
