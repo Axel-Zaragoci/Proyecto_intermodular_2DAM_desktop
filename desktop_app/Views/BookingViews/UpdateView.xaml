@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="desktop_app.Views.BookingViews.UpdateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:desktop_app.Views.BookingViews"
+             xmlns:viewmodels="clr-namespace:desktop_app.ViewModels"
+             Style="{StaticResource UserControlBase}"
+             DataContext="{x:Static viewmodels:UpdateBookingFormViewModel.Instance}">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Row="0" Grid.Column="0" Margin="0 15 15 0" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel>
+                <Label Content="DNI del cliente: " Target="DniComboBox" Style="{StaticResource LabelForm}"/>
+                <ComboBox
+                    x:Name="DniComboBox"
+                    ItemsSource="{Binding Clients}"
+                    DisplayMemberPath="FullNameWithDni"
+                    SelectedValuePath="Dni"
+                    SelectedValue="{Binding ClientDni, Mode=TwoWay}"
+                    IsEnabled="{Binding Enabled}" 
+                    Style="{StaticResource DropdownStyle}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1">
+                <Label Content="Número de la habitación: " Target="RoomNumberComboBox" Style="{StaticResource LabelForm}"/>
+                <ComboBox 
+                    x:Name="RoomNumberComboBox"
+                      ItemsSource="{Binding Rooms}"
+                      DisplayMemberPath="RoomNumber"
+                      SelectedValuePath="RoomNumber"
+                      SelectedValue="{Binding RoomNumber, Mode=TwoWay}"
+                      IsEnabled="{Binding Enabled}" 
+                      Style="{StaticResource DropdownStyle}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel>
+                        <Label Content="Fecha de inicio: " Target="StartDatePicker" Style="{StaticResource LabelForm}"/>
+                        <DatePicker x:Name="StartDatePicker" SelectedDate="{Binding CheckInDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}" Margin="0 0 10 0"/>
+                    </StackPanel>
+            
+                    <StackPanel Grid.Column="1">
+                        <Label Content="Fecha de fin: " Target="EndDatePicker" Style="{StaticResource LabelForm}"/>
+                        <DatePicker x:Name="EndDatePicker" SelectedDate="{Binding CheckOutDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="3">
+                <Label Content="Cantidad de huéspedes: " Target="GuestsTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="GuestsTextBox" Text="{Binding Booking.Guests, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+        </Grid>
+        
+    
+        <Grid Grid.Row="0" Grid.Column="1" Margin="15 15 0 0" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0">
+                <Label Content="Fecha de pago: " Target="PayDateTextBox" Style="{StaticResource LabelForm}"/>
+                <DatePicker x:Name="PayDateTextBox" Text="{Binding PayDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}" IsEnabled="false"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1">
+                <Label Content="Precio total: " Target="TotalPriceTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="TotalPriceTextBox" Text="{Binding TotalPrice, Mode=OneWay}" Style="{StaticResource TextBoxForm}" IsEnabled="false"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2">
+                <Label Content="Precio por noche: " Target="PricePerNightTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="PricePerNightTextBox" Text="{Binding PricePerNight, Mode=TwoWay}" Style="{StaticResource TextBoxForm}" IsEnabled="false"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="3">
+                <Label Content="% de oferta: " Target="OfferTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="OfferTextBox" Text="{Binding Offer, Mode=TwoWay}" Style="{StaticResource TextBoxForm}" IsEnabled="false"/>
+            </StackPanel>
+        </Grid>
+        
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0 30 0 0">
+            <Button Content="Guardar" Style="{StaticResource SaveBtn}" Margin="0 0 30 0" Command="{Binding CreateBookingCommand}"/>
+            <Button Content="Cancelar reserva" Style="{StaticResource CancelBtn}" Command="{Binding CancelBookingCommand}" IsEnabled="{Binding CancelEnabled}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
