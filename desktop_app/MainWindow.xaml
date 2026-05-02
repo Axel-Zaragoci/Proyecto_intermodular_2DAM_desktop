@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:desktop_app.ViewModels"
         xmlns:services="clr-namespace:desktop_app.Services"
-        xmlns:local="clr-namespace:desktop_app"
         mc:Ignorable="d"
         Title="Hotel Pere Maria" 
         Height="600" 
@@ -46,6 +45,12 @@
                 <StackPanel Orientation="Horizontal">
                     <Image Source="./Resources/Images/invoiceIcon.png" Style="{StaticResource SideBarIcon}"/>
                     <TextBlock>Facturas</TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding ShowNotificationsCommand}" Style="{StaticResource SideBarButton}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="./Resources/Images/notificationIcon.png" Style="{StaticResource SideBarIcon}"/>
+                    <TextBlock>Recordatorios</TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>

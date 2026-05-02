@@ -134,7 +134,8 @@ namespace desktop_app.ViewModels
         {
             if (parameter is not BookingModel booking) return;
             NavigationService.Instance.NavigateTo<FormBookingView>();
-            FormBookingViewModel.Instance.Booking = booking.Clone();
+            FormBookingViewModel.Instance.BookingId = booking.Id;
+            FormBookingViewModel.Instance.NavigateToDetails(new Object());
         }
 
         
@@ -148,7 +149,8 @@ namespace desktop_app.ViewModels
         private void CreateBooking(object? parameter)
         {
             NavigationService.Instance.NavigateTo<FormBookingView>();
-            FormBookingViewModel.Instance.Booking = new BookingModel();
+            FormBookingViewModel.Instance.BookingId = "";
+            FormBookingViewModel.Instance.NavigateToDetails(new Object());
         }
     }
 }

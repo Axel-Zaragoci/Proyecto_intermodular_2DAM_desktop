@@ -32,13 +32,15 @@
     <Resource Include="Resources\Images\invoiceIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <None Remove="Resources\Images\notificationIcon.png" />
+    <Resource Include="Resources\Images\notificationIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <None Remove="Resources\Images\clockIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\MaterialIcons.ttf" />
-    <Content Include="Resources\MaterialIcons.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Resources\MaterialIcons.ttf" />
   </ItemGroup>
 
   <ItemGroup>

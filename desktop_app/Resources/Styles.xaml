@@ -1151,4 +1151,44 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    <!--
+        ESTILOS DE NOTIFICACIONES
+    -->
+    
+    <Style x:Key="NotificationListTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#007bff"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0 0 0 10"/>
+    </Style>
+    
+    <Style x:Key="NotificationBorder" TargetType="Border">
+        <Setter Property="BorderBrush" Value="#007bff"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="CornerRadius" Value="5"/>
+    </Style>
+    
+    <Style x:Key="NotificationIcon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="/Resources/#Material Icons Outlined"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0 0 5 0"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#1F3B4D"/>
+    </Style>
+    
+    <Style x:Key="NotificationBigText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#1F3B4D"/>
+    </Style>
+
+    <Style x:Key="NotificationText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Foreground" Value="#105BA6"/>
+    </Style>
 </ResourceDictionary>

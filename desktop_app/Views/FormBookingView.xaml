@@ -18,113 +18,24 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        
-        <Border Grid.ColumnSpan="2" Style="{StaticResource HeaderWrapper}">
-            <StackPanel>
-                <TextBlock Text="{Binding Title}" Style="{StaticResource HeaderMainTitle}"/>
+        <Border Grid.Row="0" Style="{StaticResource HeaderWrapper}">
+            <DockPanel LastChildFill="False" VerticalAlignment="Center">
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="{Binding Title}" Style="{StaticResource HeaderMainTitle}"/>
             
-                <Border Style="{StaticResource IdWrapper}">
-                    <TextBlock Style="{StaticResource UpdateIdStyle}" Text="{Binding Booking.Id}"/>
-                </Border>
-            </StackPanel>
+                    <Border Style="{StaticResource IdWrapper}">
+                        <TextBlock Style="{StaticResource UpdateIdStyle}" Text="{Binding BookingId}"/>
+                    </Border>
+                </StackPanel>
+                    
+                <Button Content="Volver" Style="{StaticResource HeaderNavigateButton}" Command="{Binding ReturnCommand}" DockPanel.Dock="Right"/>
+            </DockPanel>
         </Border>
         
-        <StackPanel Grid.Column="0" Grid.Row="1" Style="{StaticResource BtnWrapper}">
-            <Button Content="Volver" Style="{StaticResource RedReturnBtn}" Command="{Binding ReturnCommand}"/>
-            <Button Content="Guardar" Style="{StaticResource SaveBtn}" Command="{Binding SaveCommand}"/>
-            <Button Content="Factura" Style="{StaticResource SaveBtn}" Command="{Binding InvoiceCommand}" CommandParameter="{Binding Booking}" IsEnabled="{Binding InvoiceEnable}"/>
-            <Button Content="Cancelar" Style="{StaticResource CancelBtn}" Command="{Binding CancelCommand}" IsEnabled="{Binding Disabled}"/>
+        <StackPanel Grid.Row="1" Style="{StaticResource BtnWrapper}">
+            
         </StackPanel>
         
-        <Grid Grid.Column="0" Grid.Row="2" Margin="0 15 15 0" HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            
-            <StackPanel>
-                <Label Content="DNI del cliente: " Target="DniComboBox" Style="{StaticResource LabelForm}"/>
-                <ComboBox
-                    x:Name="DniComboBox"
-                    ItemsSource="{Binding Clients}"
-                    DisplayMemberPath="FullNameWithDni"
-                    SelectedValuePath="Dni"
-                    SelectedValue="{Binding ClientDni, Mode=TwoWay}"
-                    IsEnabled="{Binding Enabled}" 
-                    Style="{StaticResource DropdownStyle}"/>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="1">
-                <Label Content="Número de la habitación: " Target="RoomNumberComboBox" Style="{StaticResource LabelForm}"/>
-                <ComboBox 
-                    x:Name="RoomNumberComboBox"
-                      ItemsSource="{Binding Rooms}"
-                      DisplayMemberPath="RoomNumber"
-                      SelectedValuePath="RoomNumber"
-                      SelectedValue="{Binding RoomNumber, Mode=TwoWay}"
-                      IsEnabled="{Binding Enabled}" 
-                      Style="{StaticResource DropdownStyle}"/>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    
-                    <StackPanel>
-                        <Label Content="Fecha de inicio: " Target="StartDatePicker" Style="{StaticResource LabelForm}"/>
-                        <DatePicker x:Name="StartDatePicker" SelectedDate="{Binding CheckInDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}" Margin="0 0 10 0"/>
-                    </StackPanel>
-            
-                    <StackPanel Grid.Column="1">
-                        <Label Content="Fecha de fin: " Target="EndDatePicker" Style="{StaticResource LabelForm}"/>
-                        <DatePicker x:Name="EndDatePicker" SelectedDate="{Binding CheckOutDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}"/>
-                    </StackPanel>
-                </Grid>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="3">
-                <Label Content="Cantidad de huéspedes: " Target="GuestsTextBox" Style="{StaticResource LabelForm}"/>
-                <TextBox x:Name="GuestsTextBox" Text="{Binding Booking.Guests, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
-            </StackPanel>
-        </Grid>
-        
-    
-        <Grid Grid.Column="1" Grid.Row="2" Margin="15 15 0 0" HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            
-            <StackPanel Grid.Row="0">
-                <Label Content="Fecha de pago: " Target="PayDateTextBox" Style="{StaticResource LabelForm}"/>
-                <DatePicker x:Name="PayDateTextBox" Text="{Binding PayDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}" IsEnabled="false"/>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="1">
-                <Label Content="Precio total: " Target="TotalPriceTextBox" Style="{StaticResource LabelForm}"/>
-                <TextBox x:Name="TotalPriceTextBox" Text="{Binding TotalPrice, Mode=OneWay}" Style="{StaticResource TextBoxForm}" IsEnabled="false"/>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="2">
-                <Label Content="Precio por noche: " Target="PricePerNightTextBox" Style="{StaticResource LabelForm}"/>
-                <TextBox x:Name="PricePerNightTextBox" Text="{Binding PricePerNight, Mode=TwoWay}" Style="{StaticResource TextBoxForm}" IsEnabled="false"/>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="3">
-                <Label Content="% de oferta: " Target="OfferTextBox" Style="{StaticResource LabelForm}"/>
-                <TextBox x:Name="OfferTextBox" Text="{Binding Offer, Mode=TwoWay}" Style="{StaticResource TextBoxForm}" IsEnabled="false"/>
-            </StackPanel>
-        </Grid>
+        <ContentControl Grid.Row="2" Content="{Binding CurrentView}" Margin="0 10 0 0"/>
     </Grid>
 </UserControl>
