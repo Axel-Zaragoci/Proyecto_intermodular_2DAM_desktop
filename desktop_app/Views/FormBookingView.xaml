@@ -32,9 +32,28 @@
             </DockPanel>
         </Border>
         
-        <StackPanel Grid.Row="1" Style="{StaticResource BtnWrapper}">
+        <DockPanel  Grid.Row="1" LastChildFill="False">
+            <StackPanel Style="{StaticResource BtnWrapper}" DockPanel.Dock="Left">
+                    
+            </StackPanel>
             
-        </StackPanel>
+            <StackPanel DockPanel.Dock="Right">
+                <Button x:Name="MenuButton" 
+                        Style="{StaticResource DropdownExtrasMenu}" 
+                        Content="more_horiz" 
+                        ToolTip="Más opciones"
+                        Click="MenuButton_Click">
+        
+                    <Button.ContextMenu>
+                        <ContextMenu Style="{StaticResource DropdownContextMenuStyle}">
+                            <MenuItem Header="Factura" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding DownloadInvoiceCommand}"/>
+                            <MenuItem Header="Cancelar reserva" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding CancelBookingCommand}"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+        
         
         <ContentControl Grid.Row="2" Content="{Binding CurrentView}" Margin="0 10 0 0"/>
     </Grid>
