@@ -23,13 +23,13 @@ public class BasePaymentModel
     public string Status { get; set; }
     
     [JsonProperty ("paymentDate")]
-    public string PaymentDate { get; set; }
+    public DateTime PaymentDate { get; set; }
     
     [JsonProperty ("pricePaid")]
-    public string PricePaid { get; set; }
+    public decimal PricePaid { get; set; }
     
-    [JsonProperty ("recibedBy")]
-    public ReceivedByModel RecibedBy { get; set; }
+    [JsonProperty ("receivedBy")]
+    public ReceivedByModel ReceivedBy { get; set; }
     
     [JsonProperty ("stripeSessionId")]
     public string? StripeSessionId { get; set; }

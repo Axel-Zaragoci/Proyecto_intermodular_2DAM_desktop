@@ -44,7 +44,11 @@ namespace desktop_app.ViewModels
         public UserControl CurrentView
         {
             get => _currentView;
-            set => _currentView = value;
+            set
+            {
+                _currentView = value;
+                OnPropertyChanged(nameof(CurrentView));
+            } 
         }
 
         
@@ -57,6 +61,7 @@ namespace desktop_app.ViewModels
             BookingId = "";
             CurrentView = new UpdateView();
             NavigateToDetailsCommand = new RelayCommand(NavigateToDetails);
+            NavigateToPaymentCommand = new RelayCommand(NavigateToPayment);
             DownloadInvoiceCommand = new AsyncRelayCommand(DownloadInvoiceAsync);
             CancelBookingCommand = new AsyncRelayCommand(Cancel);
         }
@@ -119,6 +124,13 @@ namespace desktop_app.ViewModels
             CurrentView = new UpdateView();
             UpdateBookingFormViewModel.Instance.BookingId = BookingId;
         }
+
+        public void NavigateToPayment(object obj)
+        {
+            CurrentView = new BasePaymentsView();
+            BasePaymentsViewModel.Instance.BookingId = BookingId;
+            BasePaymentsViewModel.Instance.NavigateToFormView("Efectivo");
+        }
         
         public ICommand ReturnCommand { get; } =
             new RelayCommand(_ =>
@@ -126,9 +138,12 @@ namespace desktop_app.ViewModels
 
         public ICommand NavigateToDetailsCommand { get; }
         
+        public ICommand NavigateToPaymentCommand { get; }
+        
         public ICommand DownloadInvoiceCommand { get; }
         
         public ICommand CancelBookingCommand { get; }
+        
         
         private async Task<String> GetTempFileRoute(BookingModel booking)
         {

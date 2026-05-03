@@ -8,7 +8,7 @@ public class TransferPaymentModel : BasePaymentModel
     public string Reference { get; set; }
     
     [JsonProperty ("date")]
-    public DateTime Date { get; set; }
+    public DateTime TransferDate { get; set; }
     
     [JsonProperty ("holder")]
     public string Holder { get; set; }
