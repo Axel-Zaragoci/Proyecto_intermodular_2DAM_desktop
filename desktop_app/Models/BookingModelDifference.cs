@@ -19,71 +19,56 @@ public class BookingModelDifference
             differences.Add(new BookingModelDifference { PropertyName = "Id", OldValue = oldBooking.Id, NewValue = newBooking.Id });
         
         if (oldBooking.Room != newBooking.Room)
-            differences.Add(new BookingModelDifference { PropertyName = "Room", OldValue = oldBooking.Room, NewValue = newBooking.Room });
+            differences.Add(new BookingModelDifference { PropertyName = "ID de habitación", OldValue = oldBooking.Room, NewValue = newBooking.Room });
         
         if (oldBooking.Client != newBooking.Client)
-            differences.Add(new BookingModelDifference { PropertyName = "Client", OldValue = oldBooking.Client, NewValue = newBooking.Client });
+            differences.Add(new BookingModelDifference { PropertyName = "ID del cliente", OldValue = oldBooking.Client, NewValue = newBooking.Client });
         
         if (oldBooking.CheckInDate != newBooking.CheckInDate)
-            differences.Add(new BookingModelDifference { PropertyName = "CheckInDate", OldValue = oldBooking.CheckInDate.ToString(), NewValue = newBooking.CheckInDate.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Fecha de inicio", OldValue = oldBooking.CheckInDate.ToString(), NewValue = newBooking.CheckInDate.ToString() });
         
         if (oldBooking.CheckOutDate != newBooking.CheckOutDate)
-            differences.Add(new BookingModelDifference { PropertyName = "CheckOutDate", OldValue = oldBooking.CheckOutDate.ToString(), NewValue = newBooking.CheckOutDate.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Fecha de fin", OldValue = oldBooking.CheckOutDate.ToString(), NewValue = newBooking.CheckOutDate.ToString() });
         
         if (oldBooking.PayDate != newBooking.PayDate)
-            differences.Add(new BookingModelDifference { PropertyName = "PayDate", OldValue = oldBooking.PayDate.ToString(), NewValue = newBooking.PayDate.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Fecha de creación de la reserva", OldValue = oldBooking.PayDate.ToString(), NewValue = newBooking.PayDate.ToString() });
         
         if (oldBooking.TotalPrice != newBooking.TotalPrice)
-            differences.Add(new BookingModelDifference { PropertyName = "TotalPrice", OldValue = oldBooking.TotalPrice.ToString(), NewValue = newBooking.TotalPrice.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Precio total (con IVA y descuento)", OldValue = oldBooking.TotalPrice.ToString(), NewValue = newBooking.TotalPrice.ToString() });
         
         if (oldBooking.PricePerNight != newBooking.PricePerNight)
-            differences.Add(new BookingModelDifference { PropertyName = "PricePerNight", OldValue = oldBooking.PricePerNight.ToString(), NewValue = newBooking.PricePerNight.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Precio por noche (sin IVA y con descuento)", OldValue = oldBooking.PricePerNight.ToString(), NewValue = newBooking.PricePerNight.ToString() });
         
         if (oldBooking.Offer != newBooking.Offer)
-            differences.Add(new BookingModelDifference { PropertyName = "Offer", OldValue = oldBooking.Offer.ToString(), NewValue = newBooking.Offer.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "% de oferta: ", OldValue = oldBooking.Offer.ToString(), NewValue = newBooking.Offer.ToString() });
         
         if (oldBooking.Status != newBooking.Status)
-            differences.Add(new BookingModelDifference { PropertyName = "Status", OldValue = oldBooking.Status, NewValue = newBooking.Status });
+            differences.Add(new BookingModelDifference { PropertyName = "Estado", OldValue = oldBooking.Status, NewValue = newBooking.Status });
         
         if (oldBooking.Guests != newBooking.Guests)
-            differences.Add(new BookingModelDifference { PropertyName = "Guests", OldValue = oldBooking.Guests.ToString(), NewValue = newBooking.Guests.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Huéspedes", OldValue = oldBooking.Guests.ToString(), NewValue = newBooking.Guests.ToString() });
         
         if (oldBooking.TotalNights != newBooking.TotalNights)
-            differences.Add(new BookingModelDifference { PropertyName = "TotalNights", OldValue = oldBooking.TotalNights.ToString(), NewValue = newBooking.TotalNights.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Total de noches", OldValue = oldBooking.TotalNights.ToString(), NewValue = newBooking.TotalNights.ToString() });
         
         if (oldBooking.InvoiceId != newBooking.InvoiceId)
-            differences.Add(new BookingModelDifference { PropertyName = "InvoiceId", OldValue = oldBooking.InvoiceId, NewValue = newBooking.InvoiceId });
+            differences.Add(new BookingModelDifference { PropertyName = "Factura", OldValue = oldBooking.InvoiceId, NewValue = newBooking.InvoiceId });
         
         if (oldBooking.ReminderSent24H != newBooking.ReminderSent24H)
-            differences.Add(new BookingModelDifference { PropertyName = "ReminderSent24H", OldValue = oldBooking.ReminderSent24H.ToString(), NewValue = newBooking.ReminderSent24H.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 24H previas enviado", OldValue = oldBooking.ReminderSent24H ? "Si" : "No", NewValue = newBooking.ReminderSent24H ? "Si" : "No" });
         
         if (oldBooking.ReminderSent48H != newBooking.ReminderSent48H)
-            differences.Add(new BookingModelDifference { PropertyName = "ReminderSent48H", OldValue = oldBooking.ReminderSent48H.ToString(), NewValue = newBooking.ReminderSent48H.ToString() });
-        
-        if (oldBooking.ReminderName24H != newBooking.ReminderName24H)
-            differences.Add(new BookingModelDifference { PropertyName = "ReminderName24H", OldValue = oldBooking.ReminderName24H, NewValue = newBooking.ReminderName24H });
-        
-        if (oldBooking.ReminderName48H != newBooking.ReminderName48H)
-            differences.Add(new BookingModelDifference { PropertyName = "ReminderName48H", OldValue = oldBooking.ReminderName48H, NewValue = newBooking.ReminderName48H });
+            differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 28H previas enviado", OldValue = oldBooking.ReminderSent48H ? "Si" : "No", NewValue = newBooking.ReminderSent48H ? "Si" : "No" });
         
         if (oldBooking.PaymentStatus != newBooking.PaymentStatus)
-            differences.Add(new BookingModelDifference { PropertyName = "PaymentStatus", OldValue = oldBooking.PaymentStatus, NewValue = newBooking.PaymentStatus });
+            differences.Add(new BookingModelDifference { PropertyName = "Estado de pago", OldValue = oldBooking.PaymentStatus, NewValue = newBooking.PaymentStatus });
         
         if (oldBooking.TotalPaid != newBooking.TotalPaid)
-            differences.Add(new BookingModelDifference { PropertyName = "TotalPaid", OldValue = oldBooking.TotalPaid.ToString(), NewValue = newBooking.TotalPaid.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "Total pagado", OldValue = oldBooking.TotalPaid.ToString(), NewValue = newBooking.TotalPaid.ToString() });
         
         if (oldBooking.CreatedVia != newBooking.CreatedVia)
-            differences.Add(new BookingModelDifference { PropertyName = "CreatedVia", OldValue = oldBooking.CreatedVia, NewValue = newBooking.CreatedVia });
-        
-        if (oldBooking.RoomNumber != newBooking.RoomNumber)
-            differences.Add(new BookingModelDifference { PropertyName = "RoomNumber", OldValue = oldBooking.RoomNumber, NewValue = newBooking.RoomNumber });
-        
-        if (oldBooking.ClientName != newBooking.ClientName)
-            differences.Add(new BookingModelDifference { PropertyName = "ClientName", OldValue = oldBooking.ClientName, NewValue = newBooking.ClientName });
-        
-        if (oldBooking.ClientDni != newBooking.ClientDni)
-            differences.Add(new BookingModelDifference { PropertyName = "ClientDni", OldValue = oldBooking.ClientDni, NewValue = newBooking.ClientDni });
-        
+            differences.Add(new BookingModelDifference { PropertyName = "Creado desde", OldValue = oldBooking.CreatedVia, NewValue = newBooking.CreatedVia });
+
         return differences;
     }
 }

@@ -20,10 +20,10 @@ public class BookingLogModel
     public DateTime CreatedAt { get; set; }
     
     [JsonProperty ("oldBooking")]
-    public BookingModel OldBooking { get; set; } =  new BookingModel();
+    public BookingModel? OldBooking { get; set; }
     
     [JsonProperty ("newBooking")]
-    public BookingModel NewBooking { get; set; } = new BookingModel();
+    public BookingModel? NewBooking { get; set; }
     
     [JsonIgnore]
     public string User { get; set; }
@@ -36,4 +36,7 @@ public class BookingLogModel
     
     [JsonIgnore]
     public string DateString => CreatedAt.ToString("dd-MM-yyyy HH:mm:ss");
+    
+    [JsonIgnore]
+    public string DifferenceString { get; set; }
 }

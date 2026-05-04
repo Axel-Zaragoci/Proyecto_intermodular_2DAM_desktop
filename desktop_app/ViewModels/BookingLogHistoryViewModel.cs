@@ -40,7 +40,15 @@ public class BookingLogHistoryViewModel : ViewModelBase
         {
             var log = logs[i];
         
-            string roomId = log.OldBooking?.Room == "" ? log?.NewBooking.Room : log.OldBooking?.Room;
+            string roomId = "";
+            if (log.OldBooking != null && !string.IsNullOrEmpty(log.OldBooking?.Room))
+            {
+                roomId = log.OldBooking.Room;
+            }
+            else if (log.NewBooking != null && !string.IsNullOrEmpty(log.NewBooking?.Room))
+            {
+                roomId = log.NewBooking.Room;
+            }
         
             if (!string.IsNullOrEmpty(roomId) && !roomIds.Contains(roomId))
             {
@@ -52,7 +60,16 @@ public class BookingLogHistoryViewModel : ViewModelBase
         for (int i = 0; i < logs.Count; i++)
         {
             var log = logs[i];
-            string clientId = log.OldBooking?.Client == "" ? log.NewBooking?.Client : log.OldBooking?.Client;
+            string clientId = "";
+            if (log.OldBooking != null && !string.IsNullOrEmpty(log.OldBooking?.Client))
+            {
+                clientId = log.OldBooking.Client;
+            }
+            else if (log.NewBooking != null && !string.IsNullOrEmpty(log.NewBooking?.Client))
+            {
+                clientId = log.NewBooking.Client;
+            }
+            
             if (!string.IsNullOrEmpty(clientId) && !clientIds.Contains(clientId))
             {
                 clientIds.Add(clientId);
@@ -76,14 +93,29 @@ public class BookingLogHistoryViewModel : ViewModelBase
         {
             var user = users.Find(u => u.Id == log.UserId);
             log.User = $"{user?.FirstName} {user?.LastName} - {user?.Dni}";
-            var roomId = log.OldBooking?.Room == "" ? log.NewBooking?.Room : log.OldBooking?.Room;
+            
+            var roomId = "";
+            if (log.OldBooking != null && !string.IsNullOrEmpty(log.OldBooking?.Room))
+            {
+                roomId = log.OldBooking.Room;
+            }
+            else if (log.NewBooking != null && !string.IsNullOrEmpty(log.NewBooking?.Room))
+            {
+                roomId = log.NewBooking.Room;
+            }
             var room = rooms.Find(r => r.Id == roomId);
             log.Room = room?.RoomNumber;
-            if (log.OldBooking != null && log.NewBooking != null) log.Differences = BookingModelDifference.GetDifferences(log.OldBooking, log.NewBooking);
+
+            if ((log.OldBooking != null && !string.IsNullOrEmpty(log.OldBooking?.Room)) ||
+                (log.NewBooking != null && !string.IsNullOrEmpty(log.NewBooking?.Room)))
+            {
+                log.Differences = BookingModelDifference.GetDifferences(log.OldBooking ?? new BookingModel(), log.NewBooking ?? new BookingModel());
+            }
+            log.DifferenceString = String.Join("\n", log.Differences);
             Logs.Add(log);
         }
     }
-
+    
     public async Task LoadPayments()
     {
         Payments.Clear();

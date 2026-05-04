@@ -9,6 +9,68 @@
              Style="{StaticResource UserControlBase}"
              DataContext="{x:Static viewModels:BookingLogHistoryViewModel.Instance}">
     <Grid>
-        <TextBlock Text="Aquí la cronología de logs"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ListView Grid.Column="0" ItemsSource="{Binding Logs}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged" Margin="10 3" BorderThickness="0.5">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn HeaderContainerStyle="{StaticResource TableHeader}" Header="Modificaciones">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Modificado por: "/>
+                                        <TextBlock Text="{Binding User}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Fecha de modificación: "/>
+                                        <TextBlock Text="{Binding DateString}"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="Diferencias: "/>
+                                        <TextBlock Text="{Binding DifferenceString}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <ListView Grid.Column="1" ItemsSource="{Binding Payments}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged" Margin="10 3" BorderThickness="0.5">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn HeaderContainerStyle="{StaticResource TableHeader}" Header="Pagos">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Método de pago: "/>
+                                        <TextBlock Text="{Binding PaymentMethod}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Estado del pago: "/>
+                                        <TextBlock Text="{Binding Status}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Fecha de pago: "/>
+                                        <TextBlock Text="{Binding PaymentDate}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Coste pagado: "/>
+                                        <TextBlock Text="{Binding PricePaid}"/>
+                                    </StackPanel>
+                                    <TextBlock Text="Información completa: "/>
+                                    <TextBlock Text="{Binding fullData}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </UserControl>
