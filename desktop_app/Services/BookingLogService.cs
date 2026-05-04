@@ -73,7 +73,7 @@ public class BookingLogService
         if (!response.IsSuccessStatusCode)
         {
             string error = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine("Error en la API de booking: " + error);
+            Console.WriteLine("Error en la API de booking logs: " + error);
             var value = JsonConvert.DeserializeObject<Dictionary<string, string>>(error);
             if (value != null && value.ContainsKey("error"))
             {

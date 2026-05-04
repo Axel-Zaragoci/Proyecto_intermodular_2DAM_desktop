@@ -6,9 +6,9 @@ namespace desktop_app.Models
     {
         [JsonProperty("_id")]
         public string Id { get; set; } = "";
-        
-        [JsonProperty("room")]
-        public string Room { get; set; }
+
+        [JsonProperty("room")] 
+        public string Room { get; set; } = "No encontrada";
         
         [JsonProperty("client")]
         public string Client { get; set; }
