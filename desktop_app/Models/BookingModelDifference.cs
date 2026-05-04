@@ -15,15 +15,6 @@ public class BookingModelDifference
     {
         var differences = new List<BookingModelDifference>();
         
-        if (oldBooking.Id != newBooking.Id)
-            differences.Add(new BookingModelDifference { PropertyName = "Id", OldValue = oldBooking.Id, NewValue = newBooking.Id });
-        
-        if (oldBooking.Room != newBooking.Room)
-            differences.Add(new BookingModelDifference { PropertyName = "ID de habitación", OldValue = oldBooking.Room, NewValue = newBooking.Room });
-        
-        if (oldBooking.Client != newBooking.Client)
-            differences.Add(new BookingModelDifference { PropertyName = "ID del cliente", OldValue = oldBooking.Client, NewValue = newBooking.Client });
-        
         if (oldBooking.CheckInDate != newBooking.CheckInDate)
             differences.Add(new BookingModelDifference { PropertyName = "Fecha de inicio", OldValue = oldBooking.CheckInDate.ToString(), NewValue = newBooking.CheckInDate.ToString() });
         
@@ -40,7 +31,7 @@ public class BookingModelDifference
             differences.Add(new BookingModelDifference { PropertyName = "Precio por noche (sin IVA y con descuento)", OldValue = oldBooking.PricePerNight.ToString(), NewValue = newBooking.PricePerNight.ToString() });
         
         if (oldBooking.Offer != newBooking.Offer)
-            differences.Add(new BookingModelDifference { PropertyName = "% de oferta: ", OldValue = oldBooking.Offer.ToString(), NewValue = newBooking.Offer.ToString() });
+            differences.Add(new BookingModelDifference { PropertyName = "% de oferta", OldValue = oldBooking.Offer.ToString(), NewValue = newBooking.Offer.ToString() });
         
         if (oldBooking.Status != newBooking.Status)
             differences.Add(new BookingModelDifference { PropertyName = "Estado", OldValue = oldBooking.Status, NewValue = newBooking.Status });
