@@ -53,6 +53,12 @@
                     <TextBlock>Recordatorios</TextBlock>
                 </StackPanel>
             </Button>
+            <Button Command="{Binding ShowAuditCommand}" Style="{StaticResource SideBarButton}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="./Resources/Images/logsIcon.png" Style="{StaticResource SideBarIcon}"/>
+                    <TextBlock>Modificaciones</TextBlock>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <ScrollViewer x:Name="MainScrollViewer" Grid.Column="1">

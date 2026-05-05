@@ -1197,8 +1197,9 @@
     -->
     <Style x:Key="NavBarButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0.5"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0 0 0 0.5"/>
+        <Setter Property="BorderBrush" Value="#959ac4"/>
+        <Setter Property="Margin" Value="2.5 0 "/>
         <Setter Property="FontSize" Value="17"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="#007bff"/>
@@ -1217,11 +1218,15 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="#e1efff"/>
                 <Setter Property="Foreground" Value="#11111b"/>
+                <Setter Property="BorderThickness" Value="0 0 0 1"/>
+                <Setter Property="BorderBrush" Value="#007bff"/>
             </Trigger>
                         
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="#a5d0ff"/>
                 <Setter Property="Foreground" Value="#11111b"/>
+                <Setter Property="BorderThickness" Value="0 0 0 1"/>
+                <Setter Property="BorderBrush" Value="#007bff"/>
             </Trigger>
         </Style.Triggers>
     </Style>
