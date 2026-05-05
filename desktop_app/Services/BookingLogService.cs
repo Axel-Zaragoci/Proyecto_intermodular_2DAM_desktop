@@ -8,14 +8,33 @@ public class BookingLogService
 {
     public static async Task<List<BookingLogModel>> GetBookingLogs(string bookingId)
     {
-        var response = await CreateResponse($"{bookingId}/audit", new Object(), HttpMethod.Get);
+        var response = await CreateResponse($"booking/{bookingId}/audit", new Object(), HttpMethod.Get);
         var content = await response.Content.ReadAsStringAsync();
     
         var logs = JsonConvert.DeserializeObject<List<BookingLogModel>>(content);
     
         return logs ?? new List<BookingLogModel>();
     }
-    
+
+    public static async Task<List<BookingLogModel>> GetDeletedBookingsLogs(string type)
+    {
+        var response = await CreateResponse($"audit/bookings/{type}", new Object(), HttpMethod.Get);
+        var contet = await response.Content.ReadAsStringAsync();
+        
+        var logs = JsonConvert.DeserializeObject<List<BookingLogModel>>(contet);
+        
+        return logs ?? new List<BookingLogModel>();
+    }
+
+    public static async Task<List<BookingLogModel>> GetLogsByDocumentId(string id)
+    {
+        var response = await CreateResponse($"audit/{id}", new Object(), HttpMethod.Get);
+        var content = await response.Content.ReadAsStringAsync();
+        
+        var logs = JsonConvert.DeserializeObject<List<BookingLogModel>>(content);
+        
+        return logs ?? new List<BookingLogModel>();
+    }
     
     /// <summary>
     /// Método que crea la solicitud, obtiene la respuesta y verifica los errores
@@ -23,7 +42,6 @@ public class BookingLogService
     /// 
     /// <param name="endpoint">
     /// String del endpoint al que se debe comunicar
-    /// Como este es el manejador de reservas ya empieza la URL con el acceso al router de reservas de la API
     /// </param>
     /// <param name="payload">
     /// Objeto con los datos que se deben de enviar en el body de la solicitud a la API
@@ -37,7 +55,7 @@ public class BookingLogService
     /// </returns>
     private static async Task<HttpResponseMessage> CreateResponse(string endpoint, object payload, HttpMethod method)
     {
-        string url = $"{ApiService.BaseUrl}booking/{endpoint}";
+        string url = $"{ApiService.BaseUrl}{endpoint}";
         
         var request = new HttpRequestMessage(method, url);
         
