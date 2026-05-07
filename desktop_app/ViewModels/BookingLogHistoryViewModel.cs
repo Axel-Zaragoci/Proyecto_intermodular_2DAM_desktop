@@ -92,7 +92,9 @@ public class BookingLogHistoryViewModel : ViewModelBase
         foreach (var log in logs)
         {
             var user = users.Find(u => u.Id == log.UserId);
-            log.User = $"{user?.FirstName} {user?.LastName} - {user?.Dni}";
+            log.UserName = $"{user?.FirstName} {user?.LastName}";
+            log.UserDni = $"{user?.Dni}";
+            log.UserNameDni = $"{user?.FirstName} {user?.LastName} - {user?.Dni}";
             
             var roomId = "";
             if (log.OldBooking != null && !string.IsNullOrEmpty(log.OldBooking?.Room))

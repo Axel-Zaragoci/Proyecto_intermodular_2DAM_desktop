@@ -16,9 +16,9 @@ public class BookingLogService
         return logs ?? new List<BookingLogModel>();
     }
 
-    public static async Task<List<BookingLogModel>> GetDeletedBookingsLogs(string type)
+    public static async Task<List<BookingLogModel>> GetLogs()
     {
-        var response = await CreateResponse($"audit/bookings/{type}", new Object(), HttpMethod.Get);
+        var response = await CreateResponse($"audit/", new Object(), HttpMethod.Get);
         var contet = await response.Content.ReadAsStringAsync();
         
         var logs = JsonConvert.DeserializeObject<List<BookingLogModel>>(contet);

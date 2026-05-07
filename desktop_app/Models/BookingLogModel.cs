@@ -26,7 +26,14 @@ public class BookingLogModel
     public BookingModel? NewBooking { get; set; }
     
     [JsonIgnore]
-    public string User { get; set; }
+    public string UserName { get; set; }
+    
+    [JsonIgnore]
+    public string UserDni { get; set; }
+    
+    [JsonIgnore]
+    public string UserNameDni { get; set; }
+    
     
     [JsonIgnore]
     public string Room { get; set; }

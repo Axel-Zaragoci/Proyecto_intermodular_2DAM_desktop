@@ -24,7 +24,7 @@
                                     <StackPanel>
                                         <StackPanel Style="{StaticResource LogTextPanel}">
                                             <TextBlock Text="Modificado por: " Style="{StaticResource BoldLogText}"/>
-                                            <TextBlock Text="{Binding User}"/>
+                                            <TextBlock Text="{Binding UserNameDni}"/>
                                         </StackPanel>
                                         <StackPanel Style="{StaticResource LogTextPanel}">
                                             <TextBlock Text="Tipo de acción: " Style="{StaticResource BoldLogText}"/>
