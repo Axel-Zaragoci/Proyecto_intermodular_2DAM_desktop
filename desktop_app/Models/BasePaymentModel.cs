@@ -39,4 +39,12 @@ public class BasePaymentModel
     
     [JsonProperty ("refundReason")]
     public string? RefundReason { get; set; }
+
+    [JsonIgnore] 
+    public string fullData => this.getPaymentData();
+
+    public virtual string getPaymentData()
+    {
+        return "";
+    }
 }

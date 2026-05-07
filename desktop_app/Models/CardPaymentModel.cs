@@ -12,4 +12,9 @@ public class CardPaymentModel : BasePaymentModel
     
     [JsonProperty ("holder")]
     public string Holder { get; set; }
+
+    public override string getPaymentData()
+    {
+        return $"Tipo de tarjeta: {Type}\nÚltimos 4 dígitos de la tarjeta: {LastDigits}\nPropietario de la tarjeta: {Holder}";
+    }
 }

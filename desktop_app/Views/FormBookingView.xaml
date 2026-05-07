@@ -32,12 +32,13 @@
             </DockPanel>
         </Border>
         
-        <DockPanel  Grid.Row="1" LastChildFill="False">
-            <StackPanel Style="{StaticResource BtnWrapper}" DockPanel.Dock="Left">
-                    
+        <DockPanel Grid.Row="1" LastChildFill="False" VerticalAlignment="Center">
+            <StackPanel Style="{StaticResource BtnWrapper}" DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <Button Content="Detalles"  Style="{StaticResource NavBarButton}" Command="{Binding NavigateToDetailsCommand}"/>
+                    <Button Content="Cronología"  Style="{StaticResource NavBarButton}" Command="{Binding NavigateToLogsCommand}"/>
             </StackPanel>
             
-            <StackPanel DockPanel.Dock="Right">
+            <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
                 <Button x:Name="MenuButton" 
                         Style="{StaticResource DropdownExtrasMenu}" 
                         Content="more_horiz" 

@@ -37,6 +37,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <None Remove="Resources\Images\clockIcon.png" />
+    <None Remove="Resources\Images\logsIcon.png" />
+    <Resource Include="Resources\Images\logsIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

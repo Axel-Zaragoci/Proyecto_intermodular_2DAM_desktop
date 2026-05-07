@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="desktop_app.Views.AuditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:desktop_app.ViewModels"
+             mc:Ignorable="d"
+             Style="{StaticResource UserControlBase}">
+    <UserControl.DataContext>
+        <viewmodels:AuditViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid Margin="22" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Border Grid.Row="0" Style="{StaticResource HeaderWrapper}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource HeaderMainTitle}" DockPanel.Dock="Left"  Text="Modificaciones"/>
+                
+                <Border Background="#F7FAFD" CornerRadius="14" Padding="12" Margin="0,14,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Margin="0 0 20 0">
+                            <Label Content="ID" Style="{StaticResource LabelForm}"/>
+                            <TextBox Width="225" Text="{Binding FilterId, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Margin="0 0 20 0">
+                            <Label Content="Nombre / Apellido" Style="{StaticResource LabelForm}"/>
+                            <TextBox Width="175" Text="{Binding FilterName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0 0 20 0">
+                            <Label Content="Acción" Style="{StaticResource LabelForm}"/>
+                            <ComboBox Width="175" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" Style="{StaticResource DropdownStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Colección" Style="{StaticResource LabelForm}"/>
+                            <ComboBox Width="175" ItemsSource="{Binding Collections}" SelectedItem="{Binding SelectedCollection}" Style="{StaticResource DropdownStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+        
+        <ListView Grid.Row="2" ItemsSource="{Binding AuditLogView}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Ejecutor" HeaderContainerStyle="{StaticResource TableHeader}" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding UserNameDni}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Acción" HeaderContainerStyle="{StaticResource TableHeader}" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Action}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Colección" HeaderContainerStyle="{StaticResource TableHeader}" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Collections}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Fecha" HeaderContainerStyle="{StaticResource TableHeader}" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DateString}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="Diferencias" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DifferenceString}" Style="{StaticResource LogGridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

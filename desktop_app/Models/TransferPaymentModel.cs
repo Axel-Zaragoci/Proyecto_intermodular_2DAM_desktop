@@ -15,4 +15,9 @@ public class TransferPaymentModel : BasePaymentModel
     
     [JsonProperty ("originAccount")]
     public string OriginAccount { get; set; }
+
+    public override string getPaymentData()
+    {
+        return $"Identificador de tranferencia: {Reference}\nFecha de transferencia: {TransferDate.ToString("dd-MM-yyy")}\nPropietario de la cuenta: {Holder}\nNúmero de cuenta: {OriginAccount}";
+    }
 }

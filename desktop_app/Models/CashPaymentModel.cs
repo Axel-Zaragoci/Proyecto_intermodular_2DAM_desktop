@@ -9,4 +9,9 @@ public class CashPaymentModel : BasePaymentModel
     
     [JsonProperty ("changeGiven")]
     public decimal ChangeGiven { get; set; }
+
+    public override string getPaymentData()
+    {
+        return $"Cantidad recibida: {AmountReceived}\nCambio entregado: {ChangeGiven}";
+    }
 }

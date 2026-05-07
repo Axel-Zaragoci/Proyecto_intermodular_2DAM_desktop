@@ -97,7 +97,7 @@
             </StackPanel>
             
             <StackPanel Grid.Column="1">
-                <TextBlock Text="Próximas 24 horas" Style="{StaticResource NotificationListTitle}"/>
+                <TextBlock Text="Próximas 48 horas" Style="{StaticResource NotificationListTitle}"/>
                 <ItemsControl ItemsSource="{Binding Bookings48H}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

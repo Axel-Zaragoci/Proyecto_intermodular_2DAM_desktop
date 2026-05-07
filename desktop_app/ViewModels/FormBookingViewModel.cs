@@ -62,6 +62,7 @@ namespace desktop_app.ViewModels
             CurrentView = new UpdateView();
             NavigateToDetailsCommand = new RelayCommand(NavigateToDetails);
             NavigateToPaymentCommand = new RelayCommand(NavigateToPayment);
+            NavigateToLogsCommand = new RelayCommand(NavigateToLogs);
             DownloadInvoiceCommand = new AsyncRelayCommand(DownloadInvoiceAsync);
             CancelBookingCommand = new AsyncRelayCommand(Cancel);
         }
@@ -132,6 +133,12 @@ namespace desktop_app.ViewModels
             BasePaymentsViewModel.Instance.NavigateToFormView("Efectivo");
         }
         
+        public void NavigateToLogs(object obj)
+        {
+            CurrentView = new LogsView();
+            BookingLogHistoryViewModel.Instance.BookingId = BookingId;
+        }
+        
         public ICommand ReturnCommand { get; } =
             new RelayCommand(_ =>
                 NavigationService.Instance.NavigateTo<BookingView>());
@@ -140,6 +147,7 @@ namespace desktop_app.ViewModels
         
         public ICommand NavigateToPaymentCommand { get; }
         
+        public ICommand NavigateToLogsCommand { get; }
         public ICommand DownloadInvoiceCommand { get; }
         
         public ICommand CancelBookingCommand { get; }

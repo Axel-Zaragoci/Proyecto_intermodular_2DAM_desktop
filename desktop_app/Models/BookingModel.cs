@@ -6,8 +6,8 @@ namespace desktop_app.Models
     {
         [JsonProperty("_id")]
         public string Id { get; set; } = "";
-        
-        [JsonProperty("room")]
+
+        [JsonProperty("room")] 
         public string Room { get; set; }
         
         [JsonProperty("client")]
@@ -105,10 +105,7 @@ namespace desktop_app.Models
                 ReminderName48H = ReminderName48H,
                 PaymentStatus = PaymentStatus,
                 TotalPaid = TotalPaid,
-                CreatedVia = CreatedVia,
-                RoomNumber = RoomNumber,
-                ClientName = ClientName,
-                ClientDni = ClientDni
+                CreatedVia = CreatedVia
             };
         }
 
