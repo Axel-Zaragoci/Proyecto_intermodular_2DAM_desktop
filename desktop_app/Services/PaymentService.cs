@@ -66,6 +66,16 @@ public class PaymentService
         return allCompleted != null;
     }
 
+    public static async Task<List<BasePaymentModel>> GetPayments()
+    {
+        var endpoint = $"payments/";
+        var response = await CreateResponse(endpoint, new {}, HttpMethod.Get);
+        var json = await response.Content.ReadAsStringAsync();
+        var payments = ProcessPaymentListJson(json);
+        Console.WriteLine(payments.Count);
+        return payments;
+    }
+
     private static List<BasePaymentModel> ProcessPaymentListJson(string json)
     {
         var rawPayments = JsonConvert.DeserializeObject<List<JObject>>(json);

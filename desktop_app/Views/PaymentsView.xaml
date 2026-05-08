@@ -1,0 +1,127 @@
+﻿<UserControl x:Class="desktop_app.Views.PaymentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:desktop_app.ViewModels"
+             mc:Ignorable="d"
+             Style="{StaticResource UserControlBase}">
+    <UserControl.DataContext>
+        <viewmodels:PaymentsViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid Margin="22" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Border Grid.Row="0" Style="{StaticResource HeaderWrapper}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource HeaderMainTitle}" DockPanel.Dock="Left"  Text="Pagos"/>
+                
+                <Border Background="#F7FAFD" CornerRadius="14" Padding="12" Margin="0,14,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Margin="0 0 20 0">
+                            <Label Content="ID de reserva" Style="{StaticResource LabelForm}"/>
+                            <TextBox Width="225" Text="{Binding FilterBookingId, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Margin="0 0 20 0">
+                            <Label Content="Cliente" Style="{StaticResource LabelForm}"/>
+                            <TextBox Width="175" Text="{Binding FilterClientName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0 0 20 0">
+                            <Label Content="Método" Style="{StaticResource LabelForm}"/>
+                            <ComboBox Width="175" ItemsSource="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Style="{StaticResource DropdownStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Fecha" Style="{StaticResource LabelForm}"/>
+                            <DockPanel>
+                                <DatePicker SelectedDate="{Binding SelectedDate}" Style="{StaticResource DatePickerForm}" DockPanel.Dock="Left" Margin="0 0 10 0"/>
+                                <ComboBox ItemsSource="{Binding DateFilterTypes}" SelectedItem="{Binding SelectedDateFilter}" Style="{StaticResource DropdownStyle}" DockPanel.Dock="Right"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+        
+        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0 0 0 10">
+            <Button Style="{StaticResource SaveBtn}" Content="Recargar" Command="{Binding ReloadCommand}"/>
+        </StackPanel>
+        
+        <ListView Grid.Row="2" ItemsSource="{Binding PaymentsView}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="ID de reserva" HeaderContainerStyle="{StaticResource TableHeader}" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding BookingId}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Cliente" HeaderContainerStyle="{StaticResource TableHeader}" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ClientName}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Método" HeaderContainerStyle="{StaticResource TableHeader}" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PaymentMethod}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Estado" HeaderContainerStyle="{StaticResource TableHeader}" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Status}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="Fecha" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PaymentDate, StringFormat='dd/MM/yyyy'}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="Cantidad" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PricePaid}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="Receptor" HeaderContainerStyle="{StaticResource TableHeader}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ReceiverName}" Style="{StaticResource GridViewCellText}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="" HeaderContainerStyle="{StaticResource TableHeader}" Width="65">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource UpdateBookingBtn}" Content="visibility" Command="{Binding DataContext.ShowPaymentCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

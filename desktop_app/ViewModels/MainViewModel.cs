@@ -37,5 +37,7 @@ namespace desktop_app.ViewModels
         public ICommand ShowNotificationsCommand { get; } = new RelayCommand(_ => NavigationService.Instance.NavigateTo<NotificationsView>());
 
         public ICommand ShowAuditCommand { get; } = new RelayCommand(_ => NavigationService.Instance.NavigateTo<AuditView>());
+        
+        public ICommand ShowPaymentsCommand { get; } = new RelayCommand(_ => NavigationService.Instance.NavigateTo<PaymentsView>());
     }
 }

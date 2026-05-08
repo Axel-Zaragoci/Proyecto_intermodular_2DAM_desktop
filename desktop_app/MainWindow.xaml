@@ -59,6 +59,12 @@
                     <TextBlock>Modificaciones</TextBlock>
                 </StackPanel>
             </Button>
+            <Button Command="{Binding ShowPaymentsCommand}" Style="{StaticResource SideBarButton}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="./Resources/Images/paymentsIcon.png" Style="{StaticResource SideBarIcon}"/>
+                    <TextBlock>Pagos</TextBlock>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <ScrollViewer x:Name="MainScrollViewer" Grid.Column="1">
