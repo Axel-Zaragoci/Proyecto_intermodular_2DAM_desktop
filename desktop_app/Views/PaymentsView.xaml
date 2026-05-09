@@ -41,7 +41,7 @@
                         <StackPanel>
                             <Label Content="Fecha" Style="{StaticResource LabelForm}"/>
                             <DockPanel>
-                                <DatePicker SelectedDate="{Binding SelectedDate}" Style="{StaticResource DatePickerForm}" DockPanel.Dock="Left" Margin="0 0 10 0"/>
+                                <DatePicker SelectedDate="{Binding SelectedDate, Mode=TwoWay}" Style="{StaticResource DatePickerForm}" DockPanel.Dock="Left" Margin="0 0 10 0"/>
                                 <ComboBox ItemsSource="{Binding DateFilterTypes}" SelectedItem="{Binding SelectedDateFilter}" Style="{StaticResource DropdownStyle}" DockPanel.Dock="Right"/>
                             </DockPanel>
                         </StackPanel>

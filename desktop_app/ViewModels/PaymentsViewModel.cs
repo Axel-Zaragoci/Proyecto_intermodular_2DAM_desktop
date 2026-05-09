@@ -49,14 +49,14 @@ public class PaymentsViewModel : ViewModelBase
         set {if (SetProperty(ref _selectedMethod, value)) PaymentsView?.Refresh();}
     }
     
-    private DateTime? _selectedDate = null;
-    public DateTime? SelectedDate
+    private DateTime _selectedDate = DateTime.Now;
+    public DateTime SelectedDate
     {
         get => _selectedDate;
         set {if (SetProperty(ref _selectedDate, value)) PaymentsView?.Refresh();}
     }
 
-    public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Antes de", "Después de" };
+    public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
     private string _selectedDateFilter = "Antes de";
     public string SelectedDateFilter
     {
@@ -117,21 +117,21 @@ public class PaymentsViewModel : ViewModelBase
         bool typeMatch = Match(payment.PaymentMethod, paymentMethod);
 
         bool dateMatch = true;
-        if (SelectedDate != null)
+        DateTime paymentDate = payment.PaymentDate;
+        switch (_selectedDateFilter)
         {
-            DateTime paymentDate = payment.PaymentDate;
-            switch (_selectedDateFilter)
-            {
-                case "Antes de":
-                    dateMatch = paymentDate.Date <= SelectedDate?.Date;
-                    break;
-                case "Después de":
-                    dateMatch = paymentDate.Date >= SelectedDate?.Date;
-                    break;
-            }
+            case "Fecha exacta":
+                dateMatch = paymentDate.Date == SelectedDate.Date;
+                break;
+            case "Antes de":
+                dateMatch = paymentDate.Date <= SelectedDate.Date;
+                break;
+            case "Después de":
+                dateMatch = paymentDate.Date >= SelectedDate.Date;
+                break;
         }
 
-        var result = idMatch && nameMatch && typeMatch && dateMatch;
+        bool result = idMatch && nameMatch && typeMatch && dateMatch;
         return result;
     }
 
