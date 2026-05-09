@@ -6,6 +6,7 @@ using System.Windows.Input;
 using desktop_app.Commands;
 using desktop_app.Models;
 using desktop_app.Services;
+using Microsoft.Win32;
 
 namespace desktop_app.ViewModels;
 
@@ -73,6 +74,7 @@ public class PaymentsViewModel : ViewModelBase
         _ = LoadData();
         ReloadCommand = new AsyncRelayCommand(LoadData);
         ShowPaymentCommand = new RelayCommand<BasePaymentModel>(ShowPayment);
+        ExportToCsvCommand = new RelayCommand(ExportToCsv);
     }
 
 
@@ -88,8 +90,15 @@ public class PaymentsViewModel : ViewModelBase
             var client = userList.Find(u => u.Id == payment.ClientId);
             payment.ClientName = client == null ? "No encontrado" : $"{client.FirstName} {client.LastName}";
 
-            var receiver = userList.Find(u => u.Id == payment.ReceivedBy.UserId);
-            payment.ReceiverName = receiver == null ? "No encontrado" : $"{receiver.FirstName} {receiver.LastName}";
+            if (payment.ReceivedBy.UserId == payment.ClientId)
+            {
+                payment.ReceiverName = "";
+            }
+            else
+            {
+                var receiver = userList.Find(u => u.Id == payment.ReceivedBy.UserId);
+                payment.ReceiverName = receiver == null ? "No encontrado" : $"{receiver.FirstName} {receiver.LastName}";
+            }
             
             payment.BookingId = payment.BookingId.Substring(0, 7);
         }
@@ -135,6 +144,33 @@ public class PaymentsViewModel : ViewModelBase
         return result;
     }
 
+    private void ExportToCsv(object obj)
+    {
+        try
+        {
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Archviso CSV (*.csv)|*.csv",
+                DefaultExt = "csv",
+                FileName = $"Pagos_{DateTime.Now:yyyyMMdd_HHmmss}",
+                Title = "Exportar pagos a CSV",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                PaymentsExporter.ExportToCsv(Payments.ToList(), saveFileDialog.FileName);
+
+                MessageBox.Show($"Pagos exportados correctamente a:\n{saveFileDialog.FileName}", "Exportación exitosa", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al exportar pagos:\n{ex.Message}", "Error al exportar", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    } 
+    
+
     private void ShowPayment(BasePaymentModel payment)
     {
         MessageBox.Show(payment.ToString(), $"Datos del pago {payment.Id}",  MessageBoxButton.OK, MessageBoxImage.Information);
@@ -142,4 +178,5 @@ public class PaymentsViewModel : ViewModelBase
     
     public ICommand ReloadCommand { get; }
     public ICommand ShowPaymentCommand { get; }
+    public ICommand ExportToCsvCommand { get; }
 }

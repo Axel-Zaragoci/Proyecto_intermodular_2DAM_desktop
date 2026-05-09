@@ -50,8 +50,9 @@
             </StackPanel>
         </Border>
         
-        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0 0 0 10">
+        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0 0 0 10" Orientation="Horizontal">
             <Button Style="{StaticResource SaveBtn}" Content="Recargar" Command="{Binding ReloadCommand}"/>
+            <Button Style="{StaticResource ExportBtn}" Content="Exportar" Command="{Binding ExportToCsvCommand}"/>
         </StackPanel>
         
         <ListView Grid.Row="2" ItemsSource="{Binding PaymentsView}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged">
