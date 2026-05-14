@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using desktop_app.Commands;
 using desktop_app.Events;
@@ -16,6 +18,7 @@ namespace desktop_app.ViewModels
         /// </summary>
         public ObservableCollection<BookingModel> Bookings { get; }
         
+        public ICollectionView BookingsView { get; set; }
         
         /// <summary>
         /// Comando para el botón de eliminar reserva
@@ -39,6 +42,60 @@ namespace desktop_app.ViewModels
         /// Comando para el botón de recargar
         /// </summary>
         public ICommand ReloadBookingCommand { get; }
+
+
+        public ObservableCollection<string> Statuses { get; } = new ObservableCollection<string> { "Abierta", "Cancelada", "Todos" };
+        private string _selectedStatus = "Todos";
+        public string SelectedStatus
+        {
+            get => _selectedStatus;
+            set {if (SetProperty(ref _selectedStatus, value)) BookingsView.Refresh();}
+        }
+        
+        private string _filterName = "";
+        public string FilterName
+        {
+            get => _filterName;
+            set {if (SetProperty(ref _filterName, value)) BookingsView.Refresh();}
+        }
+
+        
+        private string _filterRoom = "";
+        public string FilterRoom
+        {
+            get => _filterRoom;
+            set {if (SetProperty(ref _filterRoom, value)) BookingsView.Refresh();}
+        }
+
+        private DateTime _selectedStartDate = DateTime.Now;
+        public DateTime SelectedStartDate
+        {
+            get => _selectedStartDate;
+            set {if (SetProperty(ref _selectedStartDate, value)) BookingsView.Refresh();}
+        }
+        
+        private DateTime _selectedEndDate = DateTime.Now;
+        public DateTime SelectedEndDate
+        {
+            get => _selectedEndDate;
+            set {if (SetProperty(ref _selectedEndDate, value)) BookingsView.Refresh();}
+        }
+        
+        public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
+        
+        private string _selectedStartDateFilter = "Después de";
+        public string SelectedStartDateFilter
+        {
+            get => _selectedStartDateFilter;
+            set {if (SetProperty(ref _selectedStartDateFilter, value)) BookingsView.Refresh();}
+        }
+        
+        private string _selectedEndDateFilter = "Después de";
+        public string SelectedEndDateFilter
+        {
+            get => _selectedEndDateFilter;
+            set {if (SetProperty(ref _selectedEndDateFilter, value)) BookingsView.Refresh();}
+        }
         
         /// <summary>
         /// Constructor del ViewModel
@@ -50,6 +107,8 @@ namespace desktop_app.ViewModels
         public BookingViewModel()
         {
             Bookings = new ObservableCollection<BookingModel>();
+            BookingsView = CollectionViewSource.GetDefaultView(Bookings);
+            BookingsView.Filter = FilterBookings;
             _ = LoadBookingsAsync();
             DeleteBookingCommand = new AsyncRelayCommand<BookingModel>(DeleteBookingAsync);
             EditBookingCommand = new RelayCommand(EditBooking);
@@ -58,6 +117,59 @@ namespace desktop_app.ViewModels
             BookingEvents.OnBookingChanged += async () => await LoadBookingsAsync();
         }
 
+        private bool FilterBookings(object obj)
+        {
+            if (obj is not BookingModel booking) return false;
+
+            bool Match(string? value, string filter)
+            {
+                if (string.IsNullOrWhiteSpace(filter)) return true;
+                return (value ?? "").IndexOf(filter.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+
+            bool nameMatch = Match(booking.ClientName, FilterName);
+            bool roomMatch = Match(booking.RoomNumber, FilterRoom);
+            string status = SelectedStatus == "Todos" ? "" : SelectedStatus;
+            bool statusMatch = Match(booking.Status, status);
+
+            bool startDateMatch = true;
+            DateTime startDate = booking.CheckInDate;
+            switch (_selectedStartDateFilter)
+            {
+                case "Fecha exacta":
+                    startDateMatch = startDate.Date == SelectedStartDate.Date;
+                    break;
+                
+                case "Antes de":
+                    startDateMatch = startDate.Date <= SelectedStartDate.Date;
+                    break;
+                
+                case "Después de":
+                    startDateMatch = startDate.Date >= SelectedStartDate.Date;
+                    break;
+            }
+            
+            bool endDateMatch = true;
+            DateTime endDate = booking.CheckOutDate;
+            switch (_selectedEndDateFilter)
+            {
+                case "Fecha exacta":
+                    endDateMatch = endDate.Date == SelectedEndDate.Date;
+                    break;
+                
+                case "Antes de":
+                    endDateMatch = endDate.Date <= SelectedEndDate.Date;
+                    break;
+                
+                case "Después de":
+                    endDateMatch = endDate.Date >= SelectedEndDate.Date;
+                    break;
+            }
+
+            bool result = nameMatch && roomMatch && statusMatch && startDateMatch && endDateMatch;
+            return result;
+        }
+        
         
         /// <summary>
         /// Método que carga las reservas
