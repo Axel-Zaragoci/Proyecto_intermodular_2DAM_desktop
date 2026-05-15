@@ -14,12 +14,49 @@ namespace desktop_app.ViewModels
     public class BookingViewModel : ViewModelBase
     {
         /// <summary>
-        /// Colección de las reservas que se conecta a la tabla de View
+        /// Colección completa de reservas (sin paginar)
+        /// </summary>
+        private List<BookingModel> _allBookings = new List<BookingModel>();
+        
+        /// <summary>
+        /// Colección paginada de las reservas
         /// </summary>
         public ObservableCollection<BookingModel> Bookings { get; }
+
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set {if(SetProperty(ref _currentPage, value)) ApplyPagination();}
+        }
+
+        private int _pageSize = 10;
+        public int PageSize
+        {
+            get => _pageSize;
+            set { if (SetProperty(ref _pageSize, value)) ApplyPagination(); }
+        }
         
-        public ICollectionView BookingsView { get; set; }
+        private int _totalItems = 0;
+        public int TotalItems
+        {
+            get => _totalItems;
+            set => SetProperty(ref _totalItems, value);
+        }
         
+        public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
+        
+        public bool HasPreviousPage => CurrentPage > 1;
+        public bool HasNextPage => CurrentPage < TotalPages;
+        
+        public ICommand FirstPageCommand { get; }
+        public ICommand PreviousPageCommand { get; }
+        public ICommand NextPageCommand { get; }
+        public ICommand LastPageCommand { get; }
+        public ICommand GoToPageCommand { get; }
+        
+        public ObservableCollection<int> PageSizeOptions { get; } = new ObservableCollection<int> { 5, 10, 15, 20, 50 };
+
         /// <summary>
         /// Comando para el botón de eliminar reserva
         /// </summary>
@@ -49,14 +86,28 @@ namespace desktop_app.ViewModels
         public string SelectedStatus
         {
             get => _selectedStatus;
-            set {if (SetProperty(ref _selectedStatus, value)) BookingsView.Refresh();}
+            set
+            {
+                if (SetProperty(ref _selectedStatus, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
         
         private string _filterName = "";
         public string FilterName
         {
             get => _filterName;
-            set {if (SetProperty(ref _filterName, value)) BookingsView.Refresh();}
+            set
+            {
+                if (SetProperty(ref _filterName, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
 
         
@@ -64,21 +115,42 @@ namespace desktop_app.ViewModels
         public string FilterRoom
         {
             get => _filterRoom;
-            set {if (SetProperty(ref _filterRoom, value)) BookingsView.Refresh();}
+            set
+            {
+                if (SetProperty(ref _filterRoom, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
 
         private DateTime _selectedStartDate = DateTime.Now;
         public DateTime SelectedStartDate
         {
             get => _selectedStartDate;
-            set {if (SetProperty(ref _selectedStartDate, value)) BookingsView.Refresh();}
+            set
+            {
+                if (SetProperty(ref _selectedStartDate, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
         
         private DateTime _selectedEndDate = DateTime.Now;
         public DateTime SelectedEndDate
         {
             get => _selectedEndDate;
-            set {if (SetProperty(ref _selectedEndDate, value)) BookingsView.Refresh();}
+            set
+            {
+                if (SetProperty(ref _selectedEndDate, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
         
         public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
@@ -87,14 +159,28 @@ namespace desktop_app.ViewModels
         public string SelectedStartDateFilter
         {
             get => _selectedStartDateFilter;
-            set {if (SetProperty(ref _selectedStartDateFilter, value)) BookingsView.Refresh();}
+            set
+            {
+                if (SetProperty(ref _selectedStartDateFilter, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
         
         private string _selectedEndDateFilter = "Después de";
         public string SelectedEndDateFilter
         {
             get => _selectedEndDateFilter;
-            set {if (SetProperty(ref _selectedEndDateFilter, value)) BookingsView.Refresh();}
+            set
+            {
+                if (SetProperty(ref _selectedEndDateFilter, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
         
         /// <summary>
@@ -106,17 +192,79 @@ namespace desktop_app.ViewModels
         /// </summary>
         public BookingViewModel()
         {
-            Bookings = new ObservableCollection<BookingModel>();
-            BookingsView = CollectionViewSource.GetDefaultView(Bookings);
-            BookingsView.Filter = FilterBookings;
             _ = LoadBookingsAsync();
+            
+            Bookings = new ObservableCollection<BookingModel>();
+            
+            FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => HasPreviousPage);
+            PreviousPageCommand  = new RelayCommand(_ => GoToPreviousPage(), _ => HasPreviousPage);
+            NextPageCommand = new RelayCommand(_ => GoToNextPage(), _ => HasNextPage);
+            LastPageCommand = new RelayCommand(_ => GoToLastPage(), _ => HasNextPage);
+            GoToPageCommand = new RelayCommand<string>(GoToPage, CanGoToPage);
+
             DeleteBookingCommand = new AsyncRelayCommand<BookingModel>(DeleteBookingAsync);
             EditBookingCommand = new RelayCommand(EditBooking);
             CreateBookingCommand = new RelayCommand(CreateBooking);
             ReloadBookingCommand = new AsyncRelayCommand(LoadBookingsAsync);
+            
             BookingEvents.OnBookingChanged += async () => await LoadBookingsAsync();
         }
 
+        private void GoToFirstPage() => CurrentPage = 1;
+        private void GoToPreviousPage() => CurrentPage--;
+        private void GoToNextPage() => CurrentPage++;
+        private void GoToLastPage() => CurrentPage = TotalPages;
+        
+        private void GoToPage(string? pageNumber)
+        {
+            if (int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages)
+            {
+                CurrentPage = page;
+            }
+        }
+        
+        private bool CanGoToPage(string? pageNumber)
+        {
+            return int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages;
+        }
+        
+        private List<BookingModel> GetFilteredBookings()
+        {
+            if (_allBookings == null || !_allBookings.Any())
+                return new List<BookingModel>();
+                
+            return _allBookings.Where(booking => FilterBookings(booking)).ToList();
+        }
+        
+        private void ApplyFiltersAndPagination()
+        {
+            var filtered = GetFilteredBookings();
+            TotalItems = filtered.Count;
+            ApplyPagination();
+        }
+
+        private void ApplyPagination()
+        {
+            var filtered = GetFilteredBookings();
+            var paginated = filtered
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+            
+            Bookings.Clear();
+            foreach (var booking in paginated)
+            {
+                Bookings.Add(booking);
+            }
+            
+            CommandManager.InvalidateRequerySuggested();
+
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(HasPreviousPage));
+            OnPropertyChanged(nameof(HasNextPage));
+            OnPropertyChanged(nameof(CurrentPage));
+        }
+        
         private bool FilterBookings(object obj)
         {
             if (obj is not BookingModel booking) return false;
@@ -126,7 +274,7 @@ namespace desktop_app.ViewModels
                 if (string.IsNullOrWhiteSpace(filter)) return true;
                 return (value ?? "").IndexOf(filter.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
             }
-
+            
             bool nameMatch = Match(booking.ClientName, FilterName);
             bool roomMatch = Match(booking.RoomNumber, FilterRoom);
             string status = SelectedStatus == "Todos" ? "" : SelectedStatus;
@@ -182,7 +330,7 @@ namespace desktop_app.ViewModels
             try
             {
                 var list = await BookingService.GetAllBookingsAsync();
-                Bookings.Clear();
+                _allBookings.Clear();
                 foreach (var booking in list)
                 {
                     UserModel u = await UserService.GetClientByIdAsync(booking.Client);
@@ -190,8 +338,11 @@ namespace desktop_app.ViewModels
                     booking.ClientName = u.FirstName + " " + u.LastName;
                     RoomModel? room = await RoomService.GetRoomByIdAsync(booking.Room);
                     booking.RoomNumber = room != null ? room.RoomNumber : "Error";
-                    Bookings.Add(booking);
+                    _allBookings.Add(booking);
                 }
+
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
             }
             catch (Exception ex)
             {
@@ -221,7 +372,9 @@ namespace desktop_app.ViewModels
                 
                 if (deleted)
                 {
-                    Bookings.Remove(booking);
+                    _allBookings.Remove(booking);
+                    
+                    ApplyFiltersAndPagination();
                 }
                 else
                 {
