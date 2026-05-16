@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using desktop_app.ViewModels.User;
 
 namespace desktop_app.Services
 {

@@ -4,7 +4,7 @@ using desktop_app.Commands;
 using desktop_app.Models;
 using desktop_app.Services;
 
-namespace desktop_app.ViewModels;
+namespace desktop_app.ViewModels.Booking;
 
 public class TransferPaymentViewModel : ViewModelBase
 {

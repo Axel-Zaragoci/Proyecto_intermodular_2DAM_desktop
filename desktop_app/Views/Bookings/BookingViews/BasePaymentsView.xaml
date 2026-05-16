@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:desktop_app.Views.BookingViews"
              mc:Ignorable="d"
-             xmlns:viewmodels="clr-namespace:desktop_app.ViewModels"
+             xmlns:viewmodels="clr-namespace:desktop_app.ViewModels.Booking"
              Style="{StaticResource UserControlBase}"
              DataContext="{x:Static viewmodels:BasePaymentsViewModel.Instance}">
     <Grid>

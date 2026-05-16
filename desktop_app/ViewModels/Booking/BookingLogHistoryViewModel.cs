@@ -2,7 +2,7 @@
 using desktop_app.Models;
 using desktop_app.Services;
 
-namespace desktop_app.ViewModels;
+namespace desktop_app.ViewModels.Booking;
 
 public class BookingLogHistoryViewModel : ViewModelBase
 {

@@ -10,7 +10,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using static desktop_app.Services.UsersService;
 
-namespace desktop_app.ViewModels
+namespace desktop_app.ViewModels.User
 {
     public class UserViewModel : ViewModelBase
     {

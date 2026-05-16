@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using desktop_app.Models;
 using desktop_app.Views.BookingViews;
 
-namespace desktop_app.ViewModels;
+namespace desktop_app.ViewModels.Booking;
 
 public class BasePaymentsViewModel : ViewModelBase
 {

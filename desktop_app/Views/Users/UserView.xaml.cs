@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using desktop_app.ViewModels;
+using desktop_app.ViewModels.User;
 
 namespace desktop_app.Views
 {

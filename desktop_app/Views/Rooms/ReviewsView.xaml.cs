@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 using desktop_app.Models;
-using desktop_app.ViewModels;
+using desktop_app.ViewModels.Room;
 
 namespace desktop_app.Views
 {

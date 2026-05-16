@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using desktop_app.ViewModels;
+using desktop_app.ViewModels.User;
 using static desktop_app.Services.UsersService;
 
 namespace desktop_app.Views

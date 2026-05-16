@@ -7,7 +7,7 @@ using desktop_app.Models;
 using desktop_app.Services;
 using desktop_app.Views;
 
-namespace desktop_app.ViewModels;
+namespace desktop_app.ViewModels.Invoices;
 
 public class InvoicesViewModel : ViewModelBase
 {

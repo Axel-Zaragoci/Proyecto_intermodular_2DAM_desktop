@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace desktop_app.ViewModels
+namespace desktop_app.ViewModels.Room
 {
     /// <summary>
     /// ViewModel para la vista de reseñas de una habitación.

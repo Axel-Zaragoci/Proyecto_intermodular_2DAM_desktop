@@ -9,7 +9,7 @@ using desktop_app.Services;
 using desktop_app.Views;
 using desktop_app.Views.BookingViews;
 
-namespace desktop_app.ViewModels
+namespace desktop_app.ViewModels.Booking
 {
     public class FormBookingViewModel : ViewModelBase
     {

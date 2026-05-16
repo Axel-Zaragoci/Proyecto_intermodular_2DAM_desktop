@@ -9,7 +9,7 @@ using System.Windows.Input;
 using desktop_app.Services;
 using System.Text.RegularExpressions;
 
-namespace desktop_app.ViewModels
+namespace desktop_app.ViewModels.User
 {
     public enum UserUtilitiesMode { Create, View, Edit }
 
