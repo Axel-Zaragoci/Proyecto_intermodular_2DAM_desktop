@@ -16,49 +16,119 @@ namespace desktop_app.ViewModels
     {
         private readonly UsersService _usersService = new();
 
+        private List<UserModel> _allUsers = new List<UserModel>();
+        
         public ObservableCollection<UserModel> Users { get; } = new();
-        public ICollectionView UsersView { get; }
+
+        public ObservableCollection<int> PageSizeOptions { get; } = new ObservableCollection<int> { 5, 10, 15, 20, 50 };
+        
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set {if(SetProperty(ref _currentPage, value)) ApplyPagination();}
+        }
+
+        private int _pageSize = 10;
+        public int PageSize
+        {
+            get => _pageSize;
+            set { if (SetProperty(ref _pageSize, value)) ApplyPagination(); }
+        }
+        
+        private int _totalItems = 0;
+        
+        public int TotalPages => (int)Math.Ceiling((double)_totalItems / PageSize);
+        
+        public bool HasPreviousPage => CurrentPage > 1;
+        public bool HasNextPage => CurrentPage < TotalPages;
+        
+        public ICommand FirstPageCommand { get; }
+        public ICommand PreviousPageCommand { get; }
+        public ICommand NextPageCommand { get; }
+        public ICommand LastPageCommand { get; }
+        public ICommand GoToPageCommand { get; }
+        
         public ObservableCollection<string> Roles { get; } = new ObservableCollection<string> { "Todos", "Usuario", "Trabajador", "Admin" };
 
         private string _selectedRole = "Todos";
         public string SelectedRole
         {
             get => _selectedRole;
-            set { if (SetProperty(ref _selectedRole, value)) UsersView.Refresh(); }
+            set
+            {
+                if (SetProperty(ref _selectedRole, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
         private string _filterName = "";
         public string FilterName
         {
             get => _filterName;
-            set { if (SetProperty(ref _filterName, value)) UsersView.Refresh(); }
+            set {
+                if (SetProperty(ref _filterName, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                } 
+            }
         }
 
         private string _filterDni = "";
         public string FilterDni
         {
             get => _filterDni;
-            set { if (SetProperty(ref _filterDni, value)) UsersView.Refresh(); }
+            set
+            {
+                if (SetProperty(ref _filterDni, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
 
         private string _filterEmail = "";
         public string FilterEmail
         {
             get => _filterEmail;
-            set { if (SetProperty(ref _filterEmail, value)) UsersView.Refresh(); }
+            set {
+                if (SetProperty(ref _filterEmail, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();   
+                }
+            }
         }
 
         private string _filterPhone = "";
         public string FilterPhone
         {
             get => _filterPhone;
-            set { if (SetProperty(ref _filterPhone, value)) UsersView.Refresh(); }
+            set
+            {
+                if (SetProperty(ref _filterPhone, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
 
         private bool? _filterVip = null;
         public bool? FilterVip
         {
             get => _filterVip;
-            set { if (SetProperty(ref _filterVip, value)) UsersView.Refresh(); }
+            set {
+                if (SetProperty(ref _filterVip, value))
+                {
+                    CurrentPage = 1;
+                    ApplyFiltersAndPagination();
+                }
+            }
         }
 
         public ICommand ReloadCommand { get; }
@@ -69,17 +139,82 @@ namespace desktop_app.ViewModels
 
         public UserViewModel()
         {
-            UsersView = CollectionViewSource.GetDefaultView(Users);
-            UsersView.Filter = FilterUser;
-
-            ReloadCommand = new AsyncRelayCommand(() => _usersService.ReloadIntoAsync(Users, UsersView));
+            _ = LoadUsers();
+            
+            FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => HasPreviousPage);
+            PreviousPageCommand  = new RelayCommand(_ => GoToPreviousPage(), _ => HasPreviousPage);
+            NextPageCommand = new RelayCommand(_ => GoToNextPage(), _ => HasNextPage);
+            LastPageCommand = new RelayCommand(_ => GoToLastPage(), _ => HasNextPage);
+            GoToPageCommand = new RelayCommand<string>(GoToPage, CanGoToPage);
+            
+            ReloadCommand = new AsyncRelayCommand(() => LoadUsers());
 
             CreateNewCommand = new RelayCommand<object>(_ => NavigateToUtilities(UserUtilitiesMode.Create, null));
             ViewUserCommand = new RelayCommand<UserModel>(u => NavigateToUtilities(UserUtilitiesMode.View, u));
             EditUserCommand = new RelayCommand<UserModel>(u => NavigateToUtilities(UserUtilitiesMode.Edit, CloneUser(u)));
 
             DeleteUserCommand = new AsyncRelayCommand<UserModel>(DeleteUserAsync);
-            _ = _usersService.ReloadIntoAsync(Users, UsersView);
+        }
+        
+        private void GoToFirstPage() => CurrentPage = 1;
+        private void GoToPreviousPage() => CurrentPage--;
+        private void GoToNextPage() => CurrentPage++;
+        private void GoToLastPage() => CurrentPage = TotalPages;
+        
+        private void GoToPage(string? pageNumber)
+        {
+            if (int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages)
+            {
+                CurrentPage = page;
+            }
+        }
+        
+        private bool CanGoToPage(string? pageNumber)
+        {
+            return int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages;
+        }
+
+        private List<UserModel> GetFilteredUsers()
+        {
+            if (_allUsers == null || !_allUsers.Any()) return new List<UserModel>();
+            
+            return _allUsers.Where(user => FilterUser(user)).ToList();
+        }
+
+        private void ApplyFiltersAndPagination()
+        {
+            var filtered = GetFilteredUsers();
+            _totalItems = filtered.Count;
+            ApplyPagination();
+        }
+
+        private void ApplyPagination()
+        {
+            var filtered = GetFilteredUsers();
+            var paginated = filtered
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+            
+            Users.Clear();
+            foreach (var booking in paginated)
+            {
+                Users.Add(booking);
+            }
+            
+            CommandManager.InvalidateRequerySuggested();
+
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(HasPreviousPage));
+            OnPropertyChanged(nameof(HasNextPage));
+            OnPropertyChanged(nameof(CurrentPage));
+        }
+        
+        private async Task LoadUsers()
+        {
+            _allUsers = await _usersService.GetAllAsync();
+            CurrentPage = 1;
+            ApplyFiltersAndPagination();
         }
 
         private bool FilterUser(object obj)
@@ -148,7 +283,9 @@ namespace desktop_app.ViewModels
 
             try
             {
-                await _usersService.DeleteAndRemoveAsync(u, Users, UsersView);
+                await _usersService.DeleteByIdAsync(u.Id);
+                Users.Remove(u);
+                _allUsers.Remove(u);
             }
             catch (Exception ex)
             {

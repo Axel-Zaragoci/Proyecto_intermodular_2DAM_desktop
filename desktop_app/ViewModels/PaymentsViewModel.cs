@@ -12,34 +12,67 @@ namespace desktop_app.ViewModels;
 
 public class PaymentsViewModel : ViewModelBase
 {
-    private ObservableCollection<BasePaymentModel> _payments = new();
-    public ObservableCollection<BasePaymentModel> Payments
+    private List<BasePaymentModel> _allPayments = new();
+    public ObservableCollection<BasePaymentModel> Payments { get; }
+    
+    private int _currentPage = 1;
+    public int CurrentPage
     {
-        get => _payments;
-        set => SetProperty(ref _payments, value);
+        get => _currentPage;
+        set {if(SetProperty(ref _currentPage, value)) ApplyPagination();}
     }
+
+    private int _pageSize = 10;
+    public int PageSize
+    {
+        get => _pageSize;
+        set { if (SetProperty(ref _pageSize, value)) ApplyPagination(); }
+    }
+        
+    private int _totalItems = 0;
+        
+    public int TotalPages => (int)Math.Ceiling((double)_totalItems / PageSize);
+        
+    public bool HasPreviousPage => CurrentPage > 1;
+    public bool HasNextPage => CurrentPage < TotalPages;
+        
+    public ICommand FirstPageCommand { get; }
+    public ICommand PreviousPageCommand { get; }
+    public ICommand NextPageCommand { get; }
+    public ICommand LastPageCommand { get; }
+    public ICommand GoToPageCommand { get; }
+        
+    public ObservableCollection<int> PageSizeOptions { get; } = new ObservableCollection<int> { 5, 10, 15, 20, 50 };
+    
+    
     
     private ObservableCollection<UserModel> Users { get; set; }
-    
-    private ICollectionView _paymentsView;
-    public ICollectionView PaymentsView
-    {
-        get => _paymentsView;
-        set => SetProperty(ref _paymentsView, value);
-    }
 
     private string _filterBookingId = "";
     public string FilterBookingId
     {
         get => _filterBookingId;
-        set {if (SetProperty(ref _filterBookingId, value)) PaymentsView?.Refresh();}
+        set {
+            if (SetProperty(ref _filterBookingId, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();   
+            }
+        }
     }
 
     private string _filterClientName = "";
     public string FilterClientName
     {
         get  => _filterClientName;
-        set {if (SetProperty(ref _filterClientName, value)) PaymentsView?.Refresh();}
+        set
+        {
+            if (SetProperty(ref _filterClientName, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
     }
 
     public ObservableCollection<string> Methods { get; } = new ObservableCollection<string>() { "Todos", "Tarjeta", "Efectivo", "Transferencia" };
@@ -47,14 +80,27 @@ public class PaymentsViewModel : ViewModelBase
     public string SelectedMethod
     {
         get => _selectedMethod;
-        set {if (SetProperty(ref _selectedMethod, value)) PaymentsView?.Refresh();}
+        set {
+            if (SetProperty(ref _selectedMethod, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
     }
     
     private DateTime _selectedDate = DateTime.Now;
     public DateTime SelectedDate
     {
         get => _selectedDate;
-        set {if (SetProperty(ref _selectedDate, value)) PaymentsView?.Refresh();}
+        set
+        {
+            if (SetProperty(ref _selectedDate, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
     }
 
     public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
@@ -62,21 +108,87 @@ public class PaymentsViewModel : ViewModelBase
     public string SelectedDateFilter
     {
         get => _selectedDateFilter;
-        set {if (SetProperty(ref _selectedDateFilter, value)) PaymentsView?.Refresh();}
+        set
+        {
+            if (SetProperty(ref _selectedDateFilter, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
     }
 
 
     public PaymentsViewModel()
     {
-        Payments = new ObservableCollection<BasePaymentModel>();
-        PaymentsView = CollectionViewSource.GetDefaultView(Payments);
-        PaymentsView.Filter = FilterPayments;
         _ = LoadData();
+        
+        Payments = new ObservableCollection<BasePaymentModel>();
+        
+        FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => HasPreviousPage);
+        PreviousPageCommand  = new RelayCommand(_ => GoToPreviousPage(), _ => HasPreviousPage);
+        NextPageCommand = new RelayCommand(_ => GoToNextPage(), _ => HasNextPage);
+        LastPageCommand = new RelayCommand(_ => GoToLastPage(), _ => HasNextPage);
+        GoToPageCommand = new RelayCommand<string>(GoToPage, CanGoToPage);
+        
         ReloadCommand = new AsyncRelayCommand(LoadData);
         ShowPaymentCommand = new RelayCommand<BasePaymentModel>(ShowPayment);
         ExportToCsvCommand = new RelayCommand(ExportToCsv);
     }
 
+    private void GoToFirstPage() => CurrentPage = 1;
+    private void GoToPreviousPage() => CurrentPage--;
+    private void GoToNextPage() => CurrentPage++;
+    private void GoToLastPage() => CurrentPage = TotalPages;
+        
+    private void GoToPage(string? pageNumber)
+    {
+        if (int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages)
+        {
+            CurrentPage = page;
+        }
+    }
+        
+    private bool CanGoToPage(string? pageNumber)
+    {
+        return int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages;
+    }
+
+    private List<BasePaymentModel> GetFilteredPayments()
+    {
+        if (_allPayments == null || !_allPayments.Any()) return new List<BasePaymentModel>();
+
+        return _allPayments.Where(payment => FilterPayments(payment)).ToList();
+    }
+    
+    private void ApplyFiltersAndPagination()
+    {
+        var filtered = GetFilteredPayments();
+        _totalItems = filtered.Count;
+        ApplyPagination();
+    }
+
+    private void ApplyPagination()
+    {
+        var filtered = GetFilteredPayments();
+        var paginated = filtered
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
+            
+        Payments.Clear();
+        foreach (var booking in paginated)
+        {
+            Payments.Add(booking);
+        }
+            
+        CommandManager.InvalidateRequerySuggested();
+
+        OnPropertyChanged(nameof(TotalPages));
+        OnPropertyChanged(nameof(HasPreviousPage));
+        OnPropertyChanged(nameof(HasNextPage));
+        OnPropertyChanged(nameof(CurrentPage));
+    }
 
     private async Task LoadData()
     {
@@ -103,11 +215,11 @@ public class PaymentsViewModel : ViewModelBase
             payment.BookingId = payment.BookingId.Substring(0, 7);
         }
         
-        Payments.Clear();
-        foreach (var payment in paymentsList) {Payments.Add(payment);}
+        _allPayments.Clear();
+        foreach (var payment in paymentsList) {_allPayments.Add(payment);}
 
-        PaymentsView.Refresh();
-        OnPropertyChanged(nameof(PaymentsView));
+        CurrentPage = 1;
+        ApplyFiltersAndPagination();
     }
     
     private bool FilterPayments(object obj)

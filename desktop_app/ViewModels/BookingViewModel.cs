@@ -38,13 +38,8 @@ namespace desktop_app.ViewModels
         }
         
         private int _totalItems = 0;
-        public int TotalItems
-        {
-            get => _totalItems;
-            set => SetProperty(ref _totalItems, value);
-        }
         
-        public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
+        public int TotalPages => (int)Math.Ceiling((double)_totalItems / PageSize);
         
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
@@ -239,7 +234,7 @@ namespace desktop_app.ViewModels
         private void ApplyFiltersAndPagination()
         {
             var filtered = GetFilteredBookings();
-            TotalItems = filtered.Count;
+            _totalItems = filtered.Count;
             ApplyPagination();
         }
 
