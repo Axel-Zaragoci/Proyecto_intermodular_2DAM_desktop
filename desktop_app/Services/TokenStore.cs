@@ -9,5 +9,7 @@
     public static class TokenStore
     {
         public static string? AccessToken { get; set; }
+        
+        public static string? UserId { get; set; }
     }
 }

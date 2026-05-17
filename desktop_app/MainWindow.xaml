@@ -21,8 +21,25 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Style="{StaticResource SideBar}">
-            <StackPanel DockPanel.Dock="Top">
-                
+            <StackPanel DockPanel.Dock="Top" Margin="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.3*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Column="0" Style="{StaticResource LogoutButton}" Content="logout" Command="{Binding LogoutCommand}"/>
+                    
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Foreground="White" Text="{Binding UserName}" HorizontalAlignment="Right" FontWeight="Bold"/>
+                        <TextBlock Foreground="White" Text="{Binding UserRol}" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    
+                    <Border Grid.Column="2" CornerRadius="5" Margin="10 0 0 0">
+                        <Image Source="{Binding ImageRoute}" Stretch="Uniform"/>
+                    </Border>
+                </Grid>
             </StackPanel>
             
             <StackPanel Orientation="Vertical" DockPanel.Dock="Left">

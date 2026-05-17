@@ -166,8 +166,6 @@ namespace desktop_app.ViewModels.User
 
         private void PickImageLocal()
         {
-            Console.WriteLine("PickImage ejecutado");
-            
             var dlg = new OpenFileDialog
             {
                 Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.webp;*.gif",
