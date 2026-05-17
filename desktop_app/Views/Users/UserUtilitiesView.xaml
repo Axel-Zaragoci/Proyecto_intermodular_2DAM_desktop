@@ -4,11 +4,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:desktop_app.Views"
+        xmlns:viewmodel="clr-namespace:desktop_app.ViewModels.User"
         mc:Ignorable="d" 
         d:DesignHeight="450" d:DesignWidth="800"
         Style="{StaticResource UserControlBase}">
-
-    <Grid Margin="16">
+    <UserControl.DataContext>
+        <viewmodel:UserUtilitiesMode/>
+    </UserControl.DataContext>
+    
+    
+    <Grid Margin="22">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -65,18 +70,8 @@
                     <Label Content="Ciudad" Style="{StaticResource LabelForm}"/>
                     <TextBox Style="{StaticResource TextBoxForm}" Text="{Binding User.CityName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsReadOnly}"/>
                 </StackPanel>
-
+                
                 <StackPanel Grid.Row="3" Grid.Column="0">
-                    <Label Content="Ruta Imagen" Style="{StaticResource LabelForm}"/>
-                    <TextBox Style="{StaticResource TextBoxForm}" Text="{Binding User.ImageRoute, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsReadOnly}"/>
-                </StackPanel>
-
-                <StackPanel Grid.Row="3" Grid.Column="2">
-                    <Label Content="Fecha nacimiento" Style="{StaticResource LabelForm}"/>
-                    <DatePicker SelectedDate="{Binding User.BirthDate, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DatePickerForm}"/>
-                </StackPanel>
-
-                <StackPanel Grid.Row="4" Grid.Column="0">
                     <Label Content="Género" Style="{StaticResource LabelForm}" d:IsLocked="True"/>
                     <ComboBox SelectedValue="{Binding User.Gender}" SelectedValuePath="Content" Style="{StaticResource DropdownStyle}">
 
@@ -85,7 +80,12 @@
                     </ComboBox>
                 </StackPanel>
 
-                <StackPanel Grid.Row="5" Grid.Column="0">
+                <StackPanel Grid.Row="3" Grid.Column="2">
+                    <Label Content="Fecha nacimiento" Style="{StaticResource LabelForm}"/>
+                    <DatePicker SelectedDate="{Binding User.BirthDate, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DatePickerForm}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Grid.Column="0">
                     <Label Content="Rol" Style="{StaticResource LabelForm}"/>
                     <ComboBox SelectedValue="{Binding User.Rol}" SelectedValuePath="Content" Style="{StaticResource DropdownStyle}">
                         <ComboBoxItem Content="Usuario"/>
@@ -94,10 +94,34 @@
                     </ComboBox>
                 </StackPanel>
 
-                <StackPanel Grid.Row="5" Grid.Column="2">
+                <StackPanel Grid.Row="4" Grid.Column="2">
                     <Label Content="VIP" Style="{StaticResource LabelForm}"/>
                     <CheckBox Content="VIP" IsChecked="{Binding User.VipStatus}" Style="{StaticResource FormCheckBox}"/>
                 </StackPanel>
+                
+                <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource ImageBorderForm}" Margin="0 30 12 0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Width="34" Height="34" CornerRadius="12" Background="#E6F0FF" Margin="0,0,10,0">
+                            <Image Source="{Binding ImageRoute}" Width="34" Height="34" Stretch="Uniform"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Foto de perfil" Style="{StaticResource ImageTitle}"/>
+                            <TextBlock Text="{Binding ImageLabel}" Style="{StaticResource ImageName}"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="2"
+                                Style="{StaticResource ImageButton}"
+                                Content="Elegir"
+                                Command="{Binding PickImageCommand}"/>
+                    </Grid>
+                </Border>
             </Grid>
         </StackPanel>
 

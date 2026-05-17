@@ -126,7 +126,7 @@
             </ListView.View>
         </ListView>
         
-        <Border Grid.Row="3" VerticalAlignment="Bottom" Margin="10 10 10 15" Background="Transparent">
+        <Border Grid.Row="3" VerticalAlignment="Bottom" Margin="10 10 10 0" Background="Transparent">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Margin="0 0 20 0">
                     <TextBlock Text="Mostrar:" VerticalAlignment="Center" Margin="0 0 8 0"/>

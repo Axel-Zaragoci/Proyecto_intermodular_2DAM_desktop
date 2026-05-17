@@ -6,7 +6,7 @@
     <!--
     ESTILOS DE LA BARRA LATERAL
     -->
-    <Style x:Key="SideBar" TargetType="StackPanel">
+    <Style x:Key="SideBar" TargetType="DockPanel">
         <Setter Property="Background">
             <Setter.Value>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">

@@ -198,7 +198,7 @@
                     -->
                     <Border Style="{StaticResource ImageBorderMsg}">
                         <StackPanel>
-                                                        <TextBlock Text="Fotos actuales (puedes eliminarlas)" Style="{StaticResource ImageTitle}"/>
+                            <TextBlock Text="Fotos actuales (puedes eliminarlas)" Style="{StaticResource ImageTitle}"/>
                             <ItemsControl ItemsSource="{Binding ExistingImages}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
