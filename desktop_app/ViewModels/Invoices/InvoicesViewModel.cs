@@ -278,7 +278,7 @@ public class InvoicesViewModel : ViewModelBase
             _allInvoicedBookings.Clear();
             foreach (var booking in list)
             {
-                if (booking.InvoiceId != "" || booking.TotalPaid == booking.TotalPrice)
+                if (booking.CheckOutDate.Date < DateTime.Now.Date && booking.TotalPaid == booking.TotalPrice)
                 {
                     UserModel u = await UserService.GetClientByIdAsync(booking.Client);
                     booking.ClientDni = u.Dni;
