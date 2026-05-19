@@ -98,6 +98,12 @@ namespace desktop_app.ViewModels.Booking
             try
             {
                 var booking =  await BookingService.GetBookingAsync(BookingId);
+
+                if (booking.CheckOutDate.Date < DateTime.Now.Date)
+                {
+                    MessageBox.Show("Solo se pueden generar facturas de reservas finalizadas", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 
                 byte[] pdfBytes = await InvoiceService.DownloadPdfAsync(booking);
 

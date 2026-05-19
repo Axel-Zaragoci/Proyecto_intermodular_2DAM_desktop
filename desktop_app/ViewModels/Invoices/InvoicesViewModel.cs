@@ -108,7 +108,7 @@ public class InvoicesViewModel : ViewModelBase
     
     public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
     
-    private string _selectedStartDateFilter = "Después de";
+    private string _selectedStartDateFilter = "Antes de";
     public string SelectedStartDateFilter
     {
         get => _selectedStartDateFilter;
