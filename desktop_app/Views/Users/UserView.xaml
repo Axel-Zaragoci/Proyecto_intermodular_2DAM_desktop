@@ -53,7 +53,9 @@
                             <ColumnDefinition Width="10"/>
                             <ColumnDefinition Width="220"/>
                             <ColumnDefinition Width="10"/>
-                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="90"/>
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0">
@@ -77,12 +79,13 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="8">
-                            <Label Content="Rol / VIP" Style="{StaticResource LabelForm}"/>
-
-                            <DockPanel LastChildFill="True">
-                                <ComboBox Width="110" ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" Margin="0,0,10,0" Style="{StaticResource DropdownStyle}"/>
-                                <CheckBox Content="VIP" IsThreeState="True" IsChecked="{Binding FilterVip}" VerticalAlignment="Center" Style="{StaticResource FormCheckBox}" ToolTip="Indeterminado = todos | Marcado = solo VIP | Desmarcado = solo NO VIP"/>
-                            </DockPanel>
+                            <Label Content="Rol" Style="{StaticResource LabelForm}"/>
+                            <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" Style="{StaticResource DropdownStyle}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="10">
+                            <Label Content="VIP" Style="{StaticResource LabelForm}"/>
+                            <ComboBox ItemsSource="{Binding VipTypes}" SelectedItem="{Binding FilterVip}" Style="{StaticResource DropdownStyle}"/>
                         </StackPanel>
                     </Grid>
                 </Border>

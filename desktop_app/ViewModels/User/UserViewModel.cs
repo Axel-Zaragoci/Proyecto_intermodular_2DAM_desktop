@@ -118,8 +118,9 @@ namespace desktop_app.ViewModels.User
             }
         }
 
-        private bool? _filterVip = null;
-        public bool? FilterVip
+        public ObservableCollection<string> VipTypes { get; } = new ObservableCollection<string> { "Todos", "Sí", "No" };
+        private string? _filterVip = "Todos";
+        public string? FilterVip
         {
             get => _filterVip;
             set {
@@ -231,13 +232,13 @@ namespace desktop_app.ViewModels.User
 
             bool roleOk = SelectedRole == "Todos" || string.Equals(u.Rol ?? "", SelectedRole, StringComparison.OrdinalIgnoreCase);
 
-            bool isVip = u.VipStatus == true;
+            bool isVip = u.VipStatus;
 
             bool vipOk = FilterVip switch
             {
-                null => true,
-                true => isVip,
-                false => !isVip
+                "Todos" => true,
+                "Sí" => isVip,
+                "No" => !isVip
             };
 
             return Match(fullName, FilterName) && Match(u.Dni, FilterDni) && Match(u.Email, FilterEmail) && Match(u.PhoneNumber + "", FilterPhone) && roleOk && vipOk;
