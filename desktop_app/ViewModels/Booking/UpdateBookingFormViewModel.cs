@@ -115,12 +115,12 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
-    public DateTime PayDate
+    public DateTime CreationDate
     {
-        get => Booking.PayDate;
+        get => Booking.CreationDate;
         set
         {
-            Booking.PayDate = value;
+            Booking.CreationDate = value;
             OnPropertyChanged();
         }
     }
@@ -272,7 +272,7 @@ public class UpdateBookingFormViewModel :  ViewModelBase
 
         OnPropertyChanged(nameof(CheckInDate));
         OnPropertyChanged(nameof(CheckOutDate));
-        OnPropertyChanged(nameof(PayDate));
+        OnPropertyChanged(nameof(CreationDate));
 
         OnPropertyChanged(nameof(PricePerNight));
         OnPropertyChanged(nameof(BasePricePerNight));

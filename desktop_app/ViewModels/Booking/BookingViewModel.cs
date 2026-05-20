@@ -76,7 +76,7 @@ namespace desktop_app.ViewModels.Booking
         public ICommand ReloadBookingCommand { get; }
 
 
-        public ObservableCollection<string> Statuses { get; } = new ObservableCollection<string> { "Abierta", "Cancelada", "Todos" };
+        public ObservableCollection<string> Statuses { get; } = new ObservableCollection<string> { "Abierta", "Cancelada", "Check-in", "Check-out", "Todos" };
         private string _selectedStatus = "Todos";
         public string SelectedStatus
         {

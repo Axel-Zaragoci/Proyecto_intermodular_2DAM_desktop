@@ -80,7 +80,7 @@ namespace desktop_app.Services
             {
                 updatedBooking.CheckInDate = updatedBooking.CheckInDate.ToLocalTime();
                 updatedBooking.CheckOutDate = updatedBooking.CheckOutDate.ToLocalTime();
-                updatedBooking.PayDate = updatedBooking.PayDate.ToLocalTime();
+                updatedBooking.CreationDate = updatedBooking.CreationDate.ToLocalTime();
             }
             
             return updatedBooking;

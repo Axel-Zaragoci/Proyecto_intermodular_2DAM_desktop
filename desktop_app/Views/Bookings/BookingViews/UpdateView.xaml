@@ -85,8 +85,8 @@
             </Grid.RowDefinitions>
             
             <StackPanel Grid.Row="0">
-                <Label Content="Fecha de pago: " Target="PayDateTextBox" Style="{StaticResource LabelForm}"/>
-                <DatePicker x:Name="PayDateTextBox" Text="{Binding PayDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}" IsEnabled="false"/>
+                <Label Content="Fecha de creación: " Target="PayDateTextBox" Style="{StaticResource LabelForm}"/>
+                <DatePicker x:Name="PayDateTextBox" Text="{Binding CreationDate, Mode=TwoWay}" Language="es-Es" Style="{StaticResource DatePickerForm}" IsEnabled="false"/>
             </StackPanel>
             
             <StackPanel Grid.Row="1">

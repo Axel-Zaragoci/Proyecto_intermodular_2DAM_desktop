@@ -104,10 +104,10 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     
-                    <GridViewColumn Header="Fecha de pago" HeaderContainerStyle="{StaticResource TableHeader}">
+                    <GridViewColumn Header="Fecha de creación" HeaderContainerStyle="{StaticResource TableHeader}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding PayDate, StringFormat='dd/MM/yyyy'}" Style="{StaticResource GridViewCellText}"/>
+                                <TextBlock Text="{Binding CreationDate, StringFormat='dd/MM/yyyy'}" Style="{StaticResource GridViewCellText}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

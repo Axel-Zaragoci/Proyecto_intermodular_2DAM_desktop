@@ -19,8 +19,8 @@ namespace desktop_app.Models
         [JsonProperty("checkOutDate")]
         public DateTime CheckOutDate { get; set; } = DateTime.Now;
 
-        [JsonProperty("payDate")]
-        public DateTime PayDate { get; set; } = DateTime.Now;
+        [JsonProperty("creationDate")]
+        public DateTime CreationDate { get; set; } = DateTime.Now;
         
         [JsonProperty("totalPrice")]
         public decimal TotalPrice { get; set; }
@@ -91,7 +91,7 @@ namespace desktop_app.Models
                 Client = Client,
                 CheckInDate = CheckInDate,
                 CheckOutDate = CheckOutDate,
-                PayDate = PayDate,
+                CreationDate = CreationDate,
                 TotalPrice = TotalPrice,
                 PricePerNight = PricePerNight,
                 Offer = Offer,
@@ -119,7 +119,7 @@ namespace desktop_app.Models
                    + "\tNúmero de la habitación: " + this.RoomNumber + "\n"
                    + "Fecha de inicio: " + this.CheckInDate.ToString("d") + "\n"
                    + "Fecha de fin: " + this.CheckOutDate.ToString("d") + "\n"
-                   + "Fecha de reserva y pago: " + this.PayDate.ToString("d") + "\n"
+                   + "Fecha de reserva: " + this.CreationDate.ToString("d") + "\n"
                    + "Oferta: " + this.Offer + "%\n"
                    + "Precio total: " + this.TotalPrice + "€\n"
                    + "Precio por noche: " + this.PricePerNight + "€\n"
