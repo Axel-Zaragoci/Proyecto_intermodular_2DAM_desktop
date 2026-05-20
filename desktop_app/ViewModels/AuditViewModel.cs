@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Input;
+using desktop_app.Commands;
 using desktop_app.Models;
 using desktop_app.Services;
 
@@ -8,9 +10,9 @@ namespace desktop_app.ViewModels;
 
 public class AuditViewModel : ViewModelBase
 {
-    public ObservableCollection<BookingLogModel> AuditLog { get; set; }
+    private List<BookingLogModel> _allLogs = new List<BookingLogModel>();
     
-    public ICollectionView AuditLogView { get; set; }
+    public ObservableCollection<BookingLogModel> AuditLog { get; set; }
 
     public ObservableCollection<string> Types { get; } = new ObservableCollection<string> { "Todos", "Crear", "Actualizar", "Eliminar" };
     
@@ -18,21 +20,41 @@ public class AuditViewModel : ViewModelBase
     public string SelectedType
     {
         get => _selectedType;
-        set {if (SetProperty(ref _selectedType, value)) AuditLogView.Refresh();}
+        set
+        {
+            if (SetProperty(ref _selectedType, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination(); 
+            }
+        }
     }
 
     private string _filterName = "";
     public string FilterName
     {
         get => _filterName;
-        set {if (SetProperty(ref _filterName, value)) AuditLogView.Refresh();}
+        set
+        {
+            if (SetProperty(ref _filterName, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
     }
 
     private string _filterId = "";
     public string FilterId
     {
         get => _filterId;
-        set {if (SetProperty(ref _filterId, value)) AuditLogView.Refresh();}
+        set {
+            if (SetProperty(ref _filterId, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            } 
+        }
     }
 
     public ObservableCollection<string> Collections { get; } = new ObservableCollection<string> { "Reserva", "Habitación", "Usuarios" };
@@ -40,17 +62,112 @@ public class AuditViewModel : ViewModelBase
     public string SelectedCollection
     {
         get => _selectedCollection;
-        set { if (SetProperty(ref _selectedCollection, value)) AuditLogView.Refresh();}
+        set { 
+            if (SetProperty(ref _selectedCollection, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            } 
+        }
     }
+
+    private int _currentPage = 1;
+    public int CurrentPage
+    {
+        get => _currentPage;
+        set
+        { if (SetProperty(ref _currentPage, value)) ApplyPagination(); }
+    }
+    
+    private int _pageSize = 10;
+    public int PageSize
+    {
+        get => _pageSize;
+        set { if (SetProperty(ref _pageSize, value)) ApplyPagination(); }
+    }
+        
+    private int _totalItems = 0;
+        
+    public int TotalPages => (int)Math.Ceiling((double)_totalItems / PageSize);
+        
+    public bool HasPreviousPage => CurrentPage > 1;
+    public bool HasNextPage => CurrentPage < TotalPages;
+        
+    public ICommand FirstPageCommand { get; }
+    public ICommand PreviousPageCommand { get; }
+    public ICommand NextPageCommand { get; }
+    public ICommand LastPageCommand { get; }
+    public ICommand GoToPageCommand { get; }
+    
+    public ObservableCollection<int> PageSizeOptions { get; } = new ObservableCollection<int> { 5, 10, 15, 20, 50 };
     
     public AuditViewModel()
     {
-        AuditLog = new ObservableCollection<BookingLogModel>();
-        AuditLogView = CollectionViewSource.GetDefaultView(AuditLog);
-        
-        AuditLogView.Filter = FilterLogs;
         _ = LoadAuditLogs();
+        
+        AuditLog = new ObservableCollection<BookingLogModel>();
+        
+        FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => HasPreviousPage);
+        PreviousPageCommand  = new RelayCommand(_ => GoToPreviousPage(), _ => HasPreviousPage);
+        NextPageCommand = new RelayCommand(_ => GoToNextPage(), _ => HasNextPage);
+        LastPageCommand = new RelayCommand(_ => GoToLastPage(), _ => HasNextPage);
+        GoToPageCommand = new RelayCommand<string>(GoToPage, CanGoToPage);
     }
+    
+    private void GoToFirstPage() => CurrentPage = 1;
+    private void GoToPreviousPage() => CurrentPage--;
+    private void GoToNextPage() => CurrentPage++;
+    private void GoToLastPage() => CurrentPage = TotalPages;
+        
+    private void GoToPage(string? pageNumber)
+    {
+        if (int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages)
+        {
+            CurrentPage = page;
+        }
+    }
+        
+    private bool CanGoToPage(string? pageNumber)
+    {
+        return int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages;
+    }
+
+    private List<BookingLogModel> GetFilteredLogs()
+    {
+        if (_allLogs == null || !_allLogs.Any()) return new List<BookingLogModel>();
+
+        return _allLogs.Where(log => FilterLogs(log)).ToList();
+    }
+    
+    private void ApplyFiltersAndPagination()
+    {
+        var filtered = GetFilteredLogs();
+        _totalItems = filtered.Count;
+        ApplyPagination();
+    }
+    
+    private void ApplyPagination()
+    {
+        var filtered = GetFilteredLogs();
+        var paginated = filtered
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
+            
+        AuditLog.Clear();
+        foreach (var booking in paginated)
+        {
+            AuditLog.Add(booking);
+        }
+        
+        CommandManager.InvalidateRequerySuggested();
+
+        OnPropertyChanged(nameof(TotalPages));
+        OnPropertyChanged(nameof(HasPreviousPage));
+        OnPropertyChanged(nameof(HasNextPage));
+        OnPropertyChanged(nameof(CurrentPage));
+    }
+    
 
     private bool FilterLogs(object obj)
     {
@@ -86,7 +203,7 @@ public class AuditViewModel : ViewModelBase
 
     private async Task LoadAuditLogs()
     {
-        AuditLog.Clear();
+        _allLogs.Clear();
      
         List<BookingLogModel> logs = await BookingLogService.GetLogs();
         List<string> roomIds = new List<string>();
@@ -178,8 +295,10 @@ public class AuditViewModel : ViewModelBase
                 log.Differences = BookingModelDifference.GetDifferences(log.OldBooking ?? new BookingModel(), log.NewBooking ?? new BookingModel());
             }
             log.DifferenceString = String.Join("\n", log.Differences);
-            AuditLog.Add(log);
+            _allLogs.Add(log);
         }
-        AuditLogView.Refresh();
+
+        CurrentPage = 1;
+        ApplyFiltersAndPagination();
     }
 }

@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="desktop_app.Views.BookingViews.LogsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:desktop_app.ViewModels.Booking"
+             mc:Ignorable="d"
+             Style="{StaticResource UserControlBase}"
+             DataContext="{x:Static viewModels:BookingLogHistoryViewModel.Instance}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <ListView Grid.Column="0" ItemsSource="{Binding Logs}" AlternationCount="2" ItemContainerStyle="{StaticResource LogListViewItemStyle}" SizeChanged="ListView_SizeChanged" Margin="15 3" BorderThickness="1 0 0 0" BorderBrush="#959ac4" Background="Transparent">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn HeaderContainerStyle="{StaticResource LogTableHeader}" Header="Modificaciones">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0 10" Orientation="Horizontal">
+                                    <TextBlock Text=">" Style="{StaticResource LogIconText}"/>
+                                    <StackPanel>
+                                        <StackPanel Style="{StaticResource LogTextPanel}">
+                                            <TextBlock Text="Modificado por: " Style="{StaticResource BoldLogText}"/>
+                                            <TextBlock Text="{Binding UserNameDni}"/>
+                                        </StackPanel>
+                                        <StackPanel Style="{StaticResource LogTextPanel}">
+                                            <TextBlock Text="Tipo de acción: " Style="{StaticResource BoldLogText}"/>
+                                            <TextBlock Text="{Binding Action}"/>
+                                        </StackPanel>
+                                        <StackPanel Style="{StaticResource LogTextPanel}">
+                                            <TextBlock Text="Fecha de modificación: " Style="{StaticResource BoldLogText}"/>
+                                            <TextBlock Text="{Binding DateString}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="Diferencias: " Style="{StaticResource BoldLogText}"/>
+                                        <TextBlock Text="{Binding DifferenceString}" Style="{StaticResource DetailsLogText}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <ListView Grid.Column="1" ItemsSource="{Binding Payments}" AlternationCount="2" ItemContainerStyle="{StaticResource LogListViewItemStyle}" SizeChanged="ListView_SizeChanged" Margin="15 3" BorderThickness="1 0 0 0" BorderBrush="#959ac4" Background="Transparent">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn HeaderContainerStyle="{StaticResource LogTableHeader}" Header="Pagos">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0 10" Orientation="Horizontal">
+                                    <TextBlock Text=">" Style="{StaticResource LogIconText}"/>
+                                    <StackPanel>
+                                        <StackPanel Style="{StaticResource LogTextPanel}">
+                                            <TextBlock Text="Método de pago: " Style="{StaticResource BoldLogText}"/>
+                                            <TextBlock Text="{Binding PaymentMethod}"/>
+                                        </StackPanel>
+                                        <StackPanel Style="{StaticResource LogTextPanel}">
+                                            <TextBlock Text="Estado del pago: " Style="{StaticResource BoldLogText}"/>
+                                            <TextBlock Text="{Binding Status}"/>
+                                        </StackPanel>
+                                        <StackPanel Style="{StaticResource LogTextPanel}">
+                                            <TextBlock Text="Fecha de pago: " Style="{StaticResource BoldLogText}"/>
+                                            <TextBlock Text="{Binding PaymentDate}"/>
+                                        </StackPanel>
+                                        <StackPanel Style="{StaticResource LogTextPanel}">
+                                            <TextBlock Text="Coste pagado: " Style="{StaticResource BoldLogText}"/>
+                                            <TextBlock Text="{Binding PricePaid}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="Información completa: " Style="{StaticResource BoldLogText}"/>
+                                        <TextBlock Text="{Binding fullData}" Style="{StaticResource DetailsLogText}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

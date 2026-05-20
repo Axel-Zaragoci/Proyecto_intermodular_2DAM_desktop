@@ -20,52 +20,75 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Vertical" Style="{StaticResource SideBar}">
-            <Image Source="./Resources/Images/hotelLogo.png" Margin="0, 0, 0, -40"/>
+        <DockPanel Style="{StaticResource SideBar}">
+            <StackPanel DockPanel.Dock="Top" Margin="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.3*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Column="0" Style="{StaticResource LogoutButton}" Content="logout" Command="{Binding LogoutCommand}"/>
+                    
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Foreground="White" Text="{Binding UserName}" HorizontalAlignment="Right" FontWeight="Bold"/>
+                        <TextBlock Foreground="White" Text="{Binding UserRol}" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    
+                    <Border Grid.Column="2" CornerRadius="5" Margin="10 0 0 0">
+                        <Image Source="{Binding ImageRoute}" Stretch="Uniform"/>
+                    </Border>
+                </Grid>
+            </StackPanel>
+            
+            <StackPanel Orientation="Vertical" DockPanel.Dock="Left">
+                <Image Source="./Resources/Images/hotelLogo.png" Margin="0, 0, 0, -40"/>
 
-            <Button Command="{Binding ShowUsersCommand}" Style="{StaticResource SideBarButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="./Resources/Images/userIcon.png" Style="{StaticResource SideBarIcon}"/>
-                    <TextBlock>Clientes</TextBlock>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ShowBookingsCommand}" Style="{StaticResource SideBarButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="./Resources/Images/bookingIcon.png" Style="{StaticResource SideBarIcon}"/>
-                    <TextBlock>Reservas</TextBlock>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ShowRoomsCommand}" Style="{StaticResource SideBarButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="./Resources/Images/roomIcon.png" Style="{StaticResource SideBarIcon}"/>
-                    <TextBlock>Habitaciones</TextBlock>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ShowInvoicesCommand}" Style="{StaticResource SideBarButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="./Resources/Images/invoiceIcon.png" Style="{StaticResource SideBarIcon}"/>
-                    <TextBlock>Facturas</TextBlock>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ShowNotificationsCommand}" Style="{StaticResource SideBarButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="./Resources/Images/notificationIcon.png" Style="{StaticResource SideBarIcon}"/>
-                    <TextBlock>Recordatorios</TextBlock>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ShowAuditCommand}" Style="{StaticResource SideBarButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="./Resources/Images/logsIcon.png" Style="{StaticResource SideBarIcon}"/>
-                    <TextBlock>Modificaciones</TextBlock>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ShowPaymentsCommand}" Style="{StaticResource SideBarButton}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="./Resources/Images/paymentsIcon.png" Style="{StaticResource SideBarIcon}"/>
-                    <TextBlock>Pagos</TextBlock>
-                </StackPanel>
-            </Button>
-        </StackPanel>
+                <Button Command="{Binding ShowUsersCommand}" Style="{StaticResource SideBarButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="./Resources/Images/userIcon.png" Style="{StaticResource SideBarIcon}"/>
+                        <TextBlock>Clientes</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ShowBookingsCommand}" Style="{StaticResource SideBarButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="./Resources/Images/bookingIcon.png" Style="{StaticResource SideBarIcon}"/>
+                        <TextBlock>Reservas</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ShowRoomsCommand}" Style="{StaticResource SideBarButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="./Resources/Images/roomIcon.png" Style="{StaticResource SideBarIcon}"/>
+                        <TextBlock>Habitaciones</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ShowInvoicesCommand}" Style="{StaticResource SideBarButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="./Resources/Images/invoiceIcon.png" Style="{StaticResource SideBarIcon}"/>
+                        <TextBlock>Facturas</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ShowNotificationsCommand}" Style="{StaticResource SideBarButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="./Resources/Images/notificationIcon.png" Style="{StaticResource SideBarIcon}"/>
+                        <TextBlock>Recordatorios</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ShowAuditCommand}" Style="{StaticResource SideBarButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="./Resources/Images/logsIcon.png" Style="{StaticResource SideBarIcon}"/>
+                        <TextBlock>Modificaciones</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ShowPaymentsCommand}" Style="{StaticResource SideBarButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="./Resources/Images/paymentsIcon.png" Style="{StaticResource SideBarIcon}"/>
+                        <TextBlock>Pagos</TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </DockPanel>
 
         <ScrollViewer x:Name="MainScrollViewer" Grid.Column="1">
             <ContentControl Content="{Binding CurrentView, Source={x:Static services:NavigationService.Instance}}"/>

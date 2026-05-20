@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using desktop_app.ViewModels.User;
 
 namespace desktop_app.Services
 {
@@ -57,7 +58,7 @@ namespace desktop_app.Services
         /// <summary>
         /// Obtiene todos los usuarios desde la API.
         /// </summary>
-        public async Task<IReadOnlyList<UserModel>> GetAllAsync(CancellationToken ct = default)
+        public async Task<List<UserModel>> GetAllAsync(CancellationToken ct = default)
         {
             using var resp = await ApiService._httpClient.GetAsync("user", ct);
             resp.EnsureSuccessStatusCode();
@@ -73,21 +74,6 @@ namespace desktop_app.Services
         {
             using var resp = await ApiService._httpClient.DeleteAsync($"user/delete/{id}", ct);
             resp.EnsureSuccessStatusCode();
-        }
-
-        /// <summary>
-        /// Hace uso de la funcion anteriror y tambien elimina al usuario de la Lsita visual
-        /// </summary>
-        public async Task DeleteAndRemoveAsync(
-            UserModel user,
-            ObservableCollection<UserModel> target,
-            ICollectionView? viewToRefresh = null,
-            CancellationToken ct = default)
-        {
-            await DeleteByIdAsync(user.Id, ct);
-
-            target.Remove(user);
-            viewToRefresh?.Refresh();
         }
 
         /// <summary>
@@ -149,23 +135,6 @@ namespace desktop_app.Services
             }
 
             return user;
-        }
-
-        /// <summary>
-        /// Recarga los usuarios desde la API en una colección observable y refresca la vista si se indica.
-        /// </summary>
-        public async Task ReloadIntoAsync(
-            ObservableCollection<UserModel> target,
-            ICollectionView? viewToRefresh = null,
-            CancellationToken ct = default)
-        {
-            var list = await GetAllAsync(ct);
-
-            target.Clear();
-            foreach (var u in list)
-                target.Add(u);
-
-            viewToRefresh?.Refresh();
         }
 
         private static async Task<string?> TryReadApiErrorAsync(HttpResponseMessage resp, CancellationToken ct)

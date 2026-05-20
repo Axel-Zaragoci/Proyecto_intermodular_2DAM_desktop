@@ -21,8 +21,8 @@ public class BookingModelDifference
         if (oldBooking.CheckOutDate != newBooking.CheckOutDate)
             differences.Add(new BookingModelDifference { PropertyName = "Fecha de fin", OldValue = oldBooking.CheckOutDate.ToString(), NewValue = newBooking.CheckOutDate.ToString() });
         
-        if (oldBooking.PayDate != newBooking.PayDate)
-            differences.Add(new BookingModelDifference { PropertyName = "Fecha de creación de la reserva", OldValue = oldBooking.PayDate.ToString(), NewValue = newBooking.PayDate.ToString() });
+        if (oldBooking.CreationDate != newBooking.CreationDate)
+            differences.Add(new BookingModelDifference { PropertyName = "Fecha de creación de la reserva", OldValue = oldBooking.CreationDate.ToString(), NewValue = newBooking.CreationDate.ToString() });
         
         if (oldBooking.TotalPrice != newBooking.TotalPrice)
             differences.Add(new BookingModelDifference { PropertyName = "Precio total (con IVA y descuento)", OldValue = oldBooking.TotalPrice.ToString(), NewValue = newBooking.TotalPrice.ToString() });

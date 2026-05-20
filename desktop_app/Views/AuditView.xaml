@@ -12,9 +12,10 @@
     
     <Grid Margin="22" Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         
         <Border Grid.Row="0" Style="{StaticResource HeaderWrapper}">
@@ -47,7 +48,7 @@
             </StackPanel>
         </Border>
         
-        <ListView Grid.Row="2" ItemsSource="{Binding AuditLogView}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged">
+        <ListView Grid.Row="2" ItemsSource="{Binding AuditLog}" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListViewItemStyle}" SizeChanged="ListView_SizeChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Ejecutor" HeaderContainerStyle="{StaticResource TableHeader}" Width="200">
@@ -92,5 +93,34 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        
+        <Border Grid.Row="3" VerticalAlignment="Bottom" Margin="10 10 10 0" Background="Transparent">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Margin="0 0 20 0">
+                    <TextBlock Text="Mostrar:" VerticalAlignment="Center" Margin="0 0 8 0"/>
+                    <ComboBox ItemsSource="{Binding PageSizeOptions}" SelectedItem="{Binding PageSize}" Style="{StaticResource DropdownStyle}"/>
+                    <TextBlock Text="reservas" VerticalAlignment="Center" Margin="8 0 0 0"/>
+                </StackPanel>
+                
+                <Button Content="1" Command="{Binding FirstPageCommand}" Style="{StaticResource NavigationBtn}" IsEnabled="{Binding HasPreviousPage}"/>
+        
+                <Button Content="«" Command="{Binding PreviousPageCommand}"  Style="{StaticResource NavigationBtn}"  IsEnabled="{Binding HasPreviousPage}"/>
+                
+                <Border Background="#F7FAFD" CornerRadius="4" Padding="8 4" Margin="0 0 8 0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Página " VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding CurrentPage, UpdateSourceTrigger=PropertyChanged}" 
+                                 TextAlignment="Center"
+                                 Margin="4 0"
+                                 Style="{StaticResource TextBoxForm}"/>
+                        <TextBlock Text="{Binding TotalPages}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                
+                <Button Content="»" Command="{Binding NextPageCommand}" Style="{StaticResource NavigationBtn}" IsEnabled="{Binding HasNextPage}"/>
+        
+                <Button Content="{Binding TotalPages}" Command="{Binding LastPageCommand}" Style="{StaticResource NavigationBtn}" IsEnabled="{Binding HasNextPage}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
