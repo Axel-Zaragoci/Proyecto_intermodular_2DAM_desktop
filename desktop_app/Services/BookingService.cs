@@ -67,8 +67,8 @@ namespace desktop_app.Services
         public static async Task<BookingModel?> UpdateBookingAsync(BookingModel booking)
         {
             var payload = new {
-                checkInDate = DateTime.SpecifyKind(booking.CheckInDate, DateTimeKind.Utc),
-                checkOutDate = DateTime.SpecifyKind(booking.CheckOutDate, DateTimeKind.Utc),
+                checkInDate = DateTime.SpecifyKind(booking.CheckInDate.Date, DateTimeKind.Utc),
+                checkOutDate = DateTime.SpecifyKind(booking.CheckOutDate.Date, DateTimeKind.Utc),
                 guests = booking.Guests
             };
 
@@ -78,10 +78,9 @@ namespace desktop_app.Services
 
             if (updatedBooking != null)
             {
-                updatedBooking.CheckInDate = updatedBooking.CheckInDate.ToLocalTime();
-                updatedBooking.CheckOutDate = updatedBooking.CheckOutDate.ToLocalTime();
-                updatedBooking.CreationDate = updatedBooking.CreationDate.ToLocalTime();
-            }
+                updatedBooking.CheckInDate = updatedBooking.CheckInDate.ToUniversalTime();
+                updatedBooking.CheckOutDate = updatedBooking.CheckOutDate.ToUniversalTime();
+                updatedBooking.CreationDate = updatedBooking.CreationDate.ToUniversalTime();            }
             
             return updatedBooking;
         }
@@ -103,8 +102,8 @@ namespace desktop_app.Services
             var payload = new {
                 client = booking.Client,
                 room = booking.Room,
-                checkInDate = booking.CheckInDate,
-                checkOutDate = booking.CheckOutDate,
+                checkInDate = DateTime.SpecifyKind(booking.CheckInDate.Date, DateTimeKind.Utc),
+                checkOutDate = DateTime.SpecifyKind(booking.CheckOutDate.Date, DateTimeKind.Utc),
                 guests = booking.Guests
             };
 
@@ -136,6 +135,45 @@ namespace desktop_app.Services
             return cancelBooking;
         }
 
+        /// <summary>
+        /// Realiza el check-in de una reserva
+        /// </summary>
+        /// 
+        /// <param name="bookingId">
+        /// ID de la reserva
+        /// </param>
+        /// 
+        /// <returns>
+        /// Devuelve la reserva cancelada devuelta por la base de datos
+        /// </returns>
+        public static async Task<BookingModel?> CheckInBookingAsync(string bookingId)
+        {
+            var response = await CreateResponse($"{bookingId}/check-in", new Object(), HttpMethod.Patch);
+            var content = await response.Content.ReadAsStringAsync();
+            var checkedInBooking = JsonConvert.DeserializeObject<BookingModel>(content);
+
+            return checkedInBooking;
+        }
+        
+        /// <summary>
+        /// Realiza el check-out de una reserva
+        /// </summary>
+        /// 
+        /// <param name="bookingId">
+        /// ID de la reserva
+        /// </param>
+        /// 
+        /// <returns>
+        /// Devuelve la reserva cancelada devuelta por la base de datos
+        /// </returns>
+        public static async Task<BookingModel?> CheckOutBookingAsync(string bookingId)
+        {
+            var response = await CreateResponse($"{bookingId}/check-out", new Object(), HttpMethod.Patch);
+            var content = await response.Content.ReadAsStringAsync();
+            var checkedOutBooking = JsonConvert.DeserializeObject<BookingModel>(content);
+
+            return checkedOutBooking;
+        }
         
         /// <summary>
         /// Método que crea la solicitud, obtiene la respuesta y verifica los errores

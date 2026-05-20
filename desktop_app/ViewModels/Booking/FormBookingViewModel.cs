@@ -65,6 +65,8 @@ namespace desktop_app.ViewModels.Booking
             NavigateToLogsCommand = new RelayCommand(NavigateToLogs);
             DownloadInvoiceCommand = new AsyncRelayCommand(DownloadInvoiceAsync);
             CancelBookingCommand = new AsyncRelayCommand(Cancel);
+            CheckInCommand = new AsyncRelayCommand(CheckIn);
+            CheckOutCommand = new AsyncRelayCommand(CheckOut);
         }
 
         
@@ -84,6 +86,40 @@ namespace desktop_app.ViewModels.Booking
                     return;
                 
                 await BookingService.CancelBookingAsync(booking.Id);
+                await BookingEvents.RaiseBookingChanged();
+                NavigationService.Instance.NavigateTo<BookingView>();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        private async Task CheckIn()
+        {
+            try
+            {
+                if (MessageBox.Show("¿Realizar check-in de la reserva?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                    return;
+                
+                await BookingService.CheckInBookingAsync(_bookingId);
+                await BookingEvents.RaiseBookingChanged();
+                NavigationService.Instance.NavigateTo<BookingView>();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        private async Task CheckOut()
+        {
+            try
+            {
+                if (MessageBox.Show("¿Realizar check-out de la reserva?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                    return;
+                
+                await BookingService.CheckOutBookingAsync(_bookingId);
                 await BookingEvents.RaiseBookingChanged();
                 NavigationService.Instance.NavigateTo<BookingView>();
             }
@@ -150,14 +186,12 @@ namespace desktop_app.ViewModels.Booking
                 NavigationService.Instance.NavigateTo<BookingView>());
 
         public ICommand NavigateToDetailsCommand { get; }
-        
         public ICommand NavigateToPaymentCommand { get; }
-        
         public ICommand NavigateToLogsCommand { get; }
         public ICommand DownloadInvoiceCommand { get; }
-        
         public ICommand CancelBookingCommand { get; }
-        
+        public ICommand CheckInCommand { get; }
+        public ICommand CheckOutCommand { get; }
         
         private async Task<String> GetTempFileRoute(BookingModel booking)
         {
