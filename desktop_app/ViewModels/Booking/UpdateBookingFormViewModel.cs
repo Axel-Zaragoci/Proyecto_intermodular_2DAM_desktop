@@ -11,11 +11,16 @@ namespace desktop_app.ViewModels.Booking;
 
 public class UpdateBookingFormViewModel :  ViewModelBase
 {
+    /// <summary>
+    /// Implementación del patrón Singleton
+    /// </summary>
     private static UpdateBookingFormViewModel? _instance;
     public static UpdateBookingFormViewModel Instance => _instance ??= new UpdateBookingFormViewModel();
 
+    /// <summary>
+    /// Propiedad que almacena el ID de la reserva que se quiere actualizar
+    /// </summary>
     private string _bookingId;
-
     public string BookingId
     {
         get => _bookingId;
@@ -26,8 +31,10 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el objeto de la reserva a editar
+    /// </summary>
     private BookingModel _booking;
-
     public BookingModel Booking
     {
         get => _booking;
@@ -54,10 +61,15 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedades para activar/desactivar campos según se utilice el formulario para crear o actualizar una reserva
+    /// </summary>
     public bool Enabled => string.IsNullOrEmpty(Booking.Id);
-    
     public bool Disabled => !Enabled;
 
+    /// <summary>
+    /// Propiedad que almacena una lista de los clientes
+    /// </summary>
     private ObservableCollection<UserModel> _clients;
     public ObservableCollection<UserModel> Clients
     {
@@ -65,6 +77,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         set => SetProperty(ref _clients, value);
     }
     
+    /// <summary>
+    /// Propiedad que almacena el DNI del cliente asociado a la reserva
+    /// </summary>
     public string ClientDni
     {
         get => Booking.ClientDni;
@@ -75,6 +90,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena una lista de las habitaciones
+    /// </summary>
     private ObservableCollection<RoomModel> _rooms = new();
     public ObservableCollection<RoomModel> Rooms
     {
@@ -82,6 +100,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         set => SetProperty(ref _rooms, value);
     }
     
+    /// <summary>
+    /// Propiedad que almacena el número de la habitación asociada a la reserva
+    /// </summary>
     public string RoomNumber
     {
         get => Booking.RoomNumber;
@@ -93,6 +114,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena la fecha de inicio de la reserva
+    /// </summary>
     public DateTime CheckInDate
     {
         get => Booking.CheckInDate;
@@ -104,6 +128,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena la fecha de fin de la reserva
+    /// </summary>
     public DateTime CheckOutDate
     {
         get => Booking.CheckOutDate;
@@ -115,6 +142,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena la fecha de creación de la reserva
+    /// </summary>
     public DateTime CreationDate
     {
         get => Booking.CreationDate;
@@ -125,8 +155,10 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el precio por noche de la habitación
+    /// </summary>
     private decimal _basePricePerNight;
-
     public decimal BasePricePerNight
     {
         get => _basePricePerNight;
@@ -138,6 +170,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Propiedad que almacena el precio por noche de la habitación aplicando el descuento y el IVA
+    /// </summary>
     public decimal PricePerNight
     {
         get => _basePricePerNight * (1 - Offer / 100) * 1.1m;
@@ -149,6 +184,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el procentaje de descuento
+    /// </summary>
     public decimal Offer
     {
         get => Booking.Offer ?? 0;
@@ -160,6 +198,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el total de noches de la reserva
+    /// </summary>
     public int TotalNights
     {
         get => Booking.TotalNights;
@@ -170,6 +211,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el precio total de la reserva
+    /// </summary>
     public decimal TotalPrice
     {
         get => Booking.TotalPrice;
@@ -180,11 +224,13 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         }
     }
     
-    
-    
-    
-    
-    
+    /// <summary>
+    /// Función que carga los clientes
+    /// FLUJO:
+    /// - Vacía la lista existente de clientes
+    /// - Obtiene todos los usuarios
+    /// - Añade a la lista todos los usuarios con el rol de cliente
+    /// </summary>
     private async Task LoadClients()
     {
         Clients.Clear();
@@ -193,6 +239,13 @@ public class UpdateBookingFormViewModel :  ViewModelBase
             if (user.Rol == "Usuario") Clients.Add(user);
     }
     
+    /// <summary>
+    /// Función que carga la lista de habitaciones
+    /// FLUJO:
+    /// - Vacía la lista existente de habitaciones
+    /// - Obtiene todas las habitaciones
+    /// - Añade a la lista todas las habitaciones
+    /// </summary>
     private async Task LoadRooms()
     {
         Rooms.Clear();
@@ -201,6 +254,14 @@ public class UpdateBookingFormViewModel :  ViewModelBase
             Rooms.Add(room);
     }
 
+    /// <summary>
+    /// Función que carga la reserva
+    /// FLUJO:
+    /// - Obtiene la reserva filtrando por ID (o en caso de crear una reserva nueva se crea una reserva en blanco)
+    /// - Obtiene la habitación y el cliente
+    /// - Asigna los datos necesarios a la reserva
+    /// - Refresca todas las propiedades en la interfaz
+    /// </summary>
     private async Task LoadBooking()
     {
         if (BookingId == "")
@@ -217,11 +278,10 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         RefreshAll();
     }
 
-
-
-
-
-
+    /// <summary>
+    /// Constructor
+    /// Inicia las listas de clientes y habitaciones, carga sus datos e inicia el comando de guardado
+    /// </summary>
     public UpdateBookingFormViewModel()
     {
         Clients = new ObservableCollection<UserModel>();
@@ -231,14 +291,12 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         CreateBookingCommand = new AsyncRelayCommand(Save);
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
+    /// <summary>
+    /// Función que cambia los datos si se cambia la habitación
+    /// </summary>
+    /// <param name="roomNumber">
+    /// Número de la habitación seleccionada
+    /// </param>
     public void ChangeRoomData(String roomNumber)
     {
         var room = _rooms.First(room => room.RoomNumber == roomNumber);
@@ -246,6 +304,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         Offer = room.Offer ?? 0;
     }
     
+    /// <summary>
+    /// Función que calcula el total de noches y el precio total al realizar un cambio
+    /// </summary>
     private void RecalculateTotal()
     {
         if (CheckOutDate <= CheckInDate)
@@ -262,6 +323,9 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         TotalPrice = subtotal * 1.1m;
     }
     
+    /// <summary>
+    /// Función que refresca todas las propiedades en la vista
+    /// </summary>
     private void RefreshAll()
     {
         OnPropertyChanged(nameof(Enabled));
@@ -283,12 +347,25 @@ public class UpdateBookingFormViewModel :  ViewModelBase
         OnPropertyChanged(nameof(BookingId));
     }
     
-    
-    
-    
+    /// <summary>
+    /// Comando de guardado de la reserva creada o modificada
+    /// </summary>
     public ICommand CreateBookingCommand { get; set; }
     
-    
+    /// <summary>
+    /// Función de guardado de la reserva
+    /// FLUJO:
+    /// - En caso de que NO hay un ID de la reserva (caso de creación)
+    ///     - Obtiene el ID del cliente y de la habitación
+    ///     - Asigna los IDs a la reserva
+    ///     - Manda la reserva a la API para su registro en la base de datos
+    ///     - Avisa de que ha habido un cambio en las reservas
+    ///     - Navega a la vista de todas las reservas
+    /// - En caso de haber ID de la reserva (caso de actualizar)
+    ///     - Manda a la API la reserva para actualizarla
+    ///     - Avisa de que ha habido un cambio en las reservas
+    ///     - Navega a la vista de todas las reservas
+    /// </summary>
     private async Task Save()
     {
         try

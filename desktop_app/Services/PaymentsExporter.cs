@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using desktop_app.Models;
 using CsvHelper;
@@ -10,6 +9,17 @@ namespace desktop_app.Services;
 
 public class PaymentsExporter
 {
+    /// <summary>
+    /// Exporta una lista de pagos en csv
+    /// Utiliza el paquete CSVHelper para facilitar el proceso
+    /// </summary>
+    /// 
+    /// <param name="payments">
+    /// Lista de los pagos a exportar
+    /// </param>
+    /// <param name="filePath">
+    /// Ruta donde guardar el CSV con los pagos
+    /// </param>
     public static void ExportToCsv(List<BasePaymentModel> payments, string filePath)
     {
         using var writer = new StreamWriter(filePath, false, Encoding.UTF8);

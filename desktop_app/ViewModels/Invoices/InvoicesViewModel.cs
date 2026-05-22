@@ -11,9 +11,15 @@ namespace desktop_app.ViewModels.Invoices;
 
 public class InvoicesViewModel : ViewModelBase
 {
+    /// <summary>
+    /// Propiedad para la lista con todos las reservas que se pueden crear las facturas
+    /// </summary>
     private List<BookingModel> _allInvoicedBookings = new List<BookingModel>();
     public ObservableCollection<BookingModel> InvoicedBookings { get; }
     
+    /// <summary>
+    /// Propiedad para guardar la página actual en la lista
+    /// </summary>
     private int _currentPage = 1;
     public int CurrentPage
     {
@@ -21,35 +27,54 @@ public class InvoicesViewModel : ViewModelBase
         set {if(SetProperty(ref _currentPage, value)) ApplyPagination();}
     }
 
+    /// <summary>
+    /// Propiedad para almacenar la cantidad de registros por página
+    /// </summary>
     private int _pageSize = 10;
     public int PageSize
     {
         get => _pageSize;
         set { if (SetProperty(ref _pageSize, value)) ApplyPagination(); }
     }
-        
+    
+    /// <summary>
+    /// Propiedad que almacena el total de registros
+    /// </summary>
     private int _totalItems = 0;
-        
     public int TotalPages => (int)Math.Ceiling((double)_totalItems / PageSize);
         
+    /// <summary>
+    /// Propiedades para saber si puede navegar a la siguiente o anterior página
+    /// </summary>
     public bool HasPreviousPage => CurrentPage > 1;
     public bool HasNextPage => CurrentPage < TotalPages;
         
+    /// <summary>
+    /// Comandos para la navegación
+    /// </summary>
     public ICommand FirstPageCommand { get; }
     public ICommand PreviousPageCommand { get; }
     public ICommand NextPageCommand { get; }
     public ICommand LastPageCommand { get; }
     public ICommand GoToPageCommand { get; }
         
+    /// <summary>
+    /// Lista con las posibles cantidades de registros por página
+    /// </summary>
     public ObservableCollection<int> PageSizeOptions { get; } = new ObservableCollection<int> { 1, 5, 10, 15, 20, 50 };
     
+    /// <summary>
+    /// Comandos para descargar y enviar factura, recargar datos y navegar al formulario de datos del hotel
+    /// </summary>
     public ICommand DownloadInvoiceCommand { get; }
     public ICommand SendInvoiceCommand { get; }
     public ICommand ReloadDataCommand { get; }
     public ICommand NavigateToHotelFormCommand { get; }
 
+    /// <summary>
+    /// Filtro para el nombre del cliente
+    /// </summary>
     private string _filterName = "";
-
     public string FilterName
     {
         get => _filterName;
@@ -63,6 +88,9 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Filtro para el número de factura
+    /// </summary>
     private string _filterNumber = "";
     public string FilterNumber
     {
@@ -77,7 +105,9 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
 
-    
+    /// <summary>
+    /// Filtro para el número de habitación
+    /// </summary>
     private string _filterRoom = "";
     public string FilterRoom
     {
@@ -92,6 +122,9 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Filtro para la fecha de inicio de la reserva asociada a la factura
+    /// </summary>
     private DateTime _selectedStartDate = DateTime.Now;
     public DateTime SelectedStartDate
     {
@@ -106,8 +139,10 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Filtro de tipo de acción según la fecha de inicio indicada en su filtro
+    /// </summary>
     public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
-    
     private string _selectedStartDateFilter = "Antes de";
     public string SelectedStartDateFilter
     {
@@ -122,6 +157,10 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Constructor
+    /// Se encarga de cargar las reservas con factura, iniciar la lista de reservas y cargar los comandos
+    /// </summary>
     public InvoicesViewModel()
     {
         _ = LoadBookingsWithInvoiceAsync();
@@ -140,11 +179,21 @@ public class InvoicesViewModel : ViewModelBase
         NavigateToHotelFormCommand = new RelayCommand(NavigateToHotelForm);
     }
     
+    /// <summary>
+    /// Funciones para la navegación a la primera, última, siguiente y anterior página
+    /// </summary>
     private void GoToFirstPage() => CurrentPage = 1;
     private void GoToPreviousPage() => CurrentPage--;
     private void GoToNextPage() => CurrentPage++;
     private void GoToLastPage() => CurrentPage = TotalPages;
         
+    /// <summary>
+    /// Función para navegar a una página en concreto dado su número
+    /// </summary>
+    /// 
+    /// <param name="pageNumber">
+    /// Número de página en cadena de texto
+    /// </param>
     private void GoToPage(string? pageNumber)
     {
         if (int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages)
@@ -153,11 +202,31 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
         
+    /// <summary>
+    /// Función para saber si puede navegar a una página en concreto dado su número
+    /// </summary>
+    ///
+    /// <param name="pageNumber">
+    /// Número de la página en cadena de texto
+    /// </param>
+    /// 
+    /// <returns>
+    /// Valor booleano:
+    ///    - true -> Puede navegar
+    ///     - false -> No puede navegar
+    /// </returns>
     private bool CanGoToPage(string? pageNumber)
     {
         return int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages;
     }
 
+    /// <summary>
+    /// Función que devuelve la lista de reservas facturables filtrada
+    /// </summary>
+    /// 
+    /// <returns>
+    /// Lista de reservas filtrada 
+    /// </returns>
     private List<BookingModel> GetFilteredInvoicedBookings()
     {
         if (_allInvoicedBookings == null || !_allInvoicedBookings.Any()) return new List<BookingModel>();
@@ -165,6 +234,9 @@ public class InvoicesViewModel : ViewModelBase
         return _allInvoicedBookings.Where(booking => FilterInvoicedBooking(booking)).ToList();
     }
     
+    /// <summary>
+    /// Función que obtiene la lista de reservas filtradas, actualiza la cantidad de registros y aplica paginación
+    /// </summary>
     private void ApplyFiltersAndPagination()
     {
         var filtered = GetFilteredInvoicedBookings();
@@ -172,6 +244,15 @@ public class InvoicesViewModel : ViewModelBase
         ApplyPagination();
     }
 
+    /// <summary>
+    /// Función que aplica la paginación
+    /// FLUJO:
+    /// - Obtiene la lista de reservas filtrada
+    /// - Obtiene solo las necesarias según la página y cantidad de registros por página
+    /// - Vacía la lista que se muestra de reservas
+    /// - Carga las reservas en la lista que se muestra
+    /// - Avisa a la interfaz que debe recargar los datos
+    /// </summary>
     private void ApplyPagination()
     {
         var filtered = GetFilteredInvoicedBookings();
@@ -194,6 +275,19 @@ public class InvoicesViewModel : ViewModelBase
         OnPropertyChanged(nameof(CurrentPage));
     }
     
+    /// <summary>
+    /// Función que indica si una reserva pasa los filtros o no
+    /// </summary>
+    /// 
+    /// <param name="obj">
+    /// Objeto correspondiente a la reserva
+    /// </param>
+    /// 
+    /// <returns>
+    /// Valor booleano:
+    ///     - true -> La reserva pasa los filtros
+    ///     - false -> La reserva no pasa los filtros
+    /// </returns>
     private bool FilterInvoicedBooking(object obj)
     {
         if (obj is not BookingModel booking) return false;
@@ -229,11 +323,29 @@ public class InvoicesViewModel : ViewModelBase
         return result;
     }
 
+    /// <summary>
+    /// Función para navegar al formulario de datos del hotel
+    /// </summary>
+    /// <param name="parameter">
+    /// Parametro requerido para el comando que utiliza esta función
+    /// </param>
     private void NavigateToHotelForm(object? parameter)
     {
         NavigationService.Instance.NavigateTo<FormHotelView>();
     }
     
+    /// <summary>
+    /// Comando que descarga la factura
+    /// FLUJO:
+    /// - Obtiene los bytes de la factura del servicio
+    /// - Obtiene una ruta en la carpeta de ficheros temporales
+    /// - Carga la factura en la ruta anterior
+    /// - Abre el programa por defecto del equipo para mostrar la factura
+    /// </summary>
+    /// 
+    /// <param name="booking">
+    /// Reserva cuya factura se quiere descargar
+    /// </param>
     private async Task DownloadInvoiceAsync(BookingModel booking)
     {
         try
@@ -259,6 +371,13 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Función que llama a la API para enviar la factura por mail al cliente
+    /// </summary>
+    /// 
+    /// <param name="booking">
+    /// Objeto de la reserva cuya factura se quiere enviar
+    /// </param>
     private async Task SendInvoiceAsync(BookingModel booking)
     {
         await InvoiceService.SendPdfAsync(booking);
@@ -299,6 +418,18 @@ public class InvoicesViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Obtiene la ruta para la factura
+    /// Junta el directorio de archivos temporales y el nobmre de fichero de la factura
+    /// </summary>
+    /// 
+    /// <param name="booking">
+    /// Objeto de la reserva cuya factura se quiere guardar
+    /// </param>
+    /// 
+    /// <returns>
+    /// Cadena de texto de la ruta en la que guardar el fichero
+    /// </returns>
     private async Task<String> GetTempFileRoute(BookingModel booking)
     {
         if (booking.InvoiceId != "")

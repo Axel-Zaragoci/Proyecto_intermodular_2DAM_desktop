@@ -8,9 +8,15 @@ namespace desktop_app.ViewModels.Booking;
 
 public class TransferPaymentViewModel : ViewModelBase
 {
+    /// <summary>
+    /// Implementación del patrón Singleton
+    /// </summary>
     private static TransferPaymentViewModel? _instance;
     public static TransferPaymentViewModel Instance => _instance ??= new TransferPaymentViewModel();
 
+    /// <summary>
+    /// Propiedad para almacenar el ID de la reserva cuyo pago se quiere registrar
+    /// </summary>
     private string _bookingId;
     public string BookingId
     {
@@ -23,6 +29,9 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad para almacenar el objeto de la reserva cuyo pago se quiere registrar
+    /// </summary>
     private BookingModel _booking;
     public BookingModel Booking
     {
@@ -34,8 +43,14 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el total a pagar en la reserva
+    /// </summary>
     public decimal TotalToPay => Booking?.TotalPrice - Booking?.TotalPaid ?? 0;
 
+    /// <summary>
+    /// Propiedad que almacena la cantidad que se va a pagar
+    /// </summary>
     private decimal _pricePaid;
     public decimal PricePaid
     {
@@ -47,6 +62,9 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena la referencia de la transferencia
+    /// </summary>
     private string _reference;
     public string Reference
     {
@@ -58,6 +76,9 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el nombre del propietario de la cuenta
+    /// </summary>
     private string _holder;
     public string Holder
     {
@@ -69,6 +90,9 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena el número de la cuenta
+    /// </summary>
     private string _originAccount;
     public string OriginAccount
     {
@@ -80,6 +104,9 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Propiedad que almacena la fecha en la que se ha realizado la transferencia
+    /// </summary>
     private DateTime _transferDate;
     public DateTime TransferDate
     {
@@ -91,6 +118,10 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Constructor
+    /// Se encarga de iniciar las propiedades, cargar la reserva e iniciar el comando para registrar el pago
+    /// </summary>
     public TransferPaymentViewModel()
     {
         PricePaid = 0;
@@ -102,10 +133,18 @@ public class TransferPaymentViewModel : ViewModelBase
         SaveCommand = new AsyncRelayCommand(SavePayment);
     }
     
-    
-    
+    /// <summary>
+    /// Comando para registrar un pago
+    /// </summary>
     public ICommand SaveCommand { get; }
 
+    /// <summary>
+    /// Función que registra el pago
+    /// FLUJO:
+    /// - Crea un nuevo pago y le asigna los valores de las propiedades
+    /// - Crea el pago en la API
+    /// - Carga la reserva con el pago actualizado y refresca las propiedades
+    /// </summary>
     private async Task SavePayment()
     {
         try
@@ -130,6 +169,10 @@ public class TransferPaymentViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Función de carga de la reserva
+    /// Solicita a la API la reserva filtrando por el ID y refresca las propiedades
+    /// </summary>
     public async Task LoadBooking()
     {
         if (BookingId == "")
@@ -141,6 +184,9 @@ public class TransferPaymentViewModel : ViewModelBase
         RefreshAll();
     }
 
+    /// <summary>
+    /// Función que refresca todas las propiedades en la vista
+    /// </summary>
     private void RefreshAll()
     {
         OnPropertyChanged(nameof(BookingId));

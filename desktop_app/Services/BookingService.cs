@@ -144,7 +144,7 @@ namespace desktop_app.Services
         /// </param>
         /// 
         /// <returns>
-        /// Devuelve la reserva cancelada devuelta por la base de datos
+        /// Devuelve la reserva con check-in devuelta por la base de datos
         /// </returns>
         public static async Task<BookingModel?> CheckInBookingAsync(string bookingId)
         {
@@ -164,7 +164,7 @@ namespace desktop_app.Services
         /// </param>
         /// 
         /// <returns>
-        /// Devuelve la reserva cancelada devuelta por la base de datos
+        /// Devuelve la reserva con check-out devuelta por la base de datos
         /// </returns>
         public static async Task<BookingModel?> CheckOutBookingAsync(string bookingId)
         {

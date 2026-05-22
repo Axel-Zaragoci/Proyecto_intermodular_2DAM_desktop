@@ -7,6 +7,20 @@ namespace desktop_app.Services;
 
 public class PaymentService
 {
+    /// <summary>
+    /// Método para registrar un pago en efectivo
+    /// </summary>
+    /// 
+    /// <param name="data">
+    /// Datos del pago
+    /// </param>
+    /// <param name="bookingId">
+    /// ID de la reserva que se paga
+    /// </param>
+    /// 
+    /// <returns>
+    /// Objeto del pago creado en la base de datos
+    /// </returns>
     public static async Task<CashPaymentModel> CreatePayment(CashPaymentModel data, string bookingId)
     {
         var endpoint = $"booking/{bookingId}/payments";
@@ -25,6 +39,20 @@ public class PaymentService
         return createdPayment;
     }
     
+    /// <summary>
+    /// Método para registrar un pago por transferencia
+    /// </summary>
+    /// 
+    /// <param name="data">
+    /// Datos del pago
+    /// </param>
+    /// <param name="bookingId">
+    /// ID de la reserva que se paga
+    /// </param>
+    /// 
+    /// <returns>
+    /// Objeto del pago creado en la base de datos
+    /// </returns>
     public static async Task<TransferPaymentModel> CreatePayment(TransferPaymentModel data, string bookingId)
     {
         var endpoint = $"booking/{bookingId}/payments";
@@ -46,6 +74,17 @@ public class PaymentService
         return createdPayment;
     }
 
+    /// <summary>
+    /// Método para obtener los pagos de una reserva
+    /// </summary>
+    /// 
+    /// <param name="bookingId">
+    /// ID de la reserva
+    /// </param>
+    /// 
+    /// <returns>
+    /// Lista de todos los pagos asociados a la reserva
+    /// </returns>
     public static async Task<List<BasePaymentModel>> GetBookingPaymentHistory(string bookingId)
     {
         var endpoint = $"booking/{bookingId}/payments";
@@ -55,6 +94,22 @@ public class PaymentService
         return payments;
     }
 
+    /// <summary>
+    /// Método para registrar un pago en efectivo
+    /// </summary>
+    /// 
+    /// <param name="reason">
+    /// Razón de la devolución
+    /// </param>
+    /// <param name="bookingId">
+    /// ID de la reserva que se paga
+    /// </param>
+    /// 
+    /// <returns>
+    /// Valor booleano:
+    ///     - true -> Todos los pagos devueltos
+    ///     - false -> Uno o más pagos no han sido devueltos
+    /// </returns>
     public static async Task<Boolean> RefundBookingPayments(string reason, string bookingId)
     {
         var endpoint = $"payments/{bookingId}/refund";
@@ -66,6 +121,13 @@ public class PaymentService
         return allCompleted != null;
     }
 
+    /// <summary>
+    /// Método para obtener todos los pagos
+    /// </summary>
+    /// 
+    /// <returns>
+    /// Lista con todos los pagos
+    /// </returns>
     public static async Task<List<BasePaymentModel>> GetPayments()
     {
         var endpoint = $"payments/";
@@ -76,6 +138,17 @@ public class PaymentService
         return payments;
     }
 
+    /// <summary>
+    /// Procesa una lista de objetos en json para obtener una lista de pagos en su modelo correcto
+    /// </summary>
+    /// 
+    /// <param name="json">
+    /// Cadena JSON con la lista de pagos
+    /// </param>
+    /// 
+    /// <returns>
+    /// Lista de pagos
+    /// </returns>
     private static List<BasePaymentModel> ProcessPaymentListJson(string json)
     {
         var rawPayments = JsonConvert.DeserializeObject<List<JObject>>(json);
@@ -98,6 +171,24 @@ public class PaymentService
         return payments;
     }
     
+    /// <summary>
+    /// Método que crea la solicitud, obtiene la respuesta y verifica los errores
+    /// </summary>
+    /// 
+    /// <param name="endpoint">
+    /// String del endpoint al que se debe comunicar
+    /// Como este es el manejador de reservas ya empieza la URL con el acceso al router de reservas de la API
+    /// </param>
+    /// <param name="payload">
+    /// Objeto con los datos que se deben de enviar en el body de la solicitud a la API
+    /// </param>
+    /// <param name="method">
+    /// Método de la solicitud HTTP
+    /// </param>
+    /// 
+    /// <returns>
+    /// Devuelve la respuesta del servidor en caso de que no haya error
+    /// </returns>
     private static async Task<HttpResponseMessage> CreateResponse(string endpoint, object payload, HttpMethod method)
     {
         string url = $"{ApiService.BaseUrl}{endpoint}";
@@ -114,6 +205,20 @@ public class PaymentService
         return response;
     }
     
+    /// <summary>
+    /// Método para registrar un pago en efectivo
+    /// </summary>
+    /// 
+    /// <param name="data">
+    /// Datos del pago
+    /// </param>
+    /// <param name="bookingId">
+    /// ID de la reserva que se paga
+    /// </param>
+    /// 
+    /// <returns>
+    /// Objeto del pago creado en la base de datos
+    /// </returns>
     private static Task HandleError(HttpResponseMessage response)
     {
         if (!response.IsSuccessStatusCode)

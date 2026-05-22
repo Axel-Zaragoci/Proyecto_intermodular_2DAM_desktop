@@ -38,11 +38,6 @@
                             <Label Content="Acción" Style="{StaticResource LabelForm}"/>
                             <ComboBox Width="175" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" Style="{StaticResource DropdownStyle}"/>
                         </StackPanel>
-
-                        <StackPanel>
-                            <Label Content="Colección" Style="{StaticResource LabelForm}"/>
-                            <ComboBox Width="175" ItemsSource="{Binding Collections}" SelectedItem="{Binding SelectedCollection}" Style="{StaticResource DropdownStyle}"/>
-                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>

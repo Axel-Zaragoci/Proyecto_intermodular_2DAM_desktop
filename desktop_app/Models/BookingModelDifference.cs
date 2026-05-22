@@ -10,7 +10,22 @@ public class BookingModelDifference
     {
         return $"{PropertyName}: {OldValue} -> {NewValue}";
     }
-
+    
+    /// <summary>
+    /// Obtiene las diferencias entre 2 reservas
+    /// Utilizado para obtener las diferencias en los logs
+    /// </summary>
+    /// 
+    /// <param name="oldBooking">
+    /// Reserva antes de la acción logueada
+    /// </param>
+    /// <param name="newBooking">
+    /// Reserva después de la acción logueada
+    /// </param>
+    /// 
+    /// <returns>
+    /// Cadena de texto con las diferencias mostrando el valor anterior y el nuevo
+    /// </returns>
     public static List<BookingModelDifference> GetDifferences(BookingModel oldBooking, BookingModel newBooking)
     {
         var differences = new List<BookingModelDifference>();

@@ -10,12 +10,20 @@ namespace desktop_app.ViewModels;
 
 public class AuditViewModel : ViewModelBase
 {
+    /// <summary>
+    /// Lista de todos los logs
+    /// </summary>
     private List<BookingLogModel> _allLogs = new List<BookingLogModel>();
     
+    /// <summary>
+    /// Colección de logs que se muestran en la pantalla
+    /// </summary>
     public ObservableCollection<BookingLogModel> AuditLog { get; set; }
 
+    /// <summary>
+    /// Lista de tipos de log y propiedad para filtrar el tipo de log
+    /// </summary>
     public ObservableCollection<string> Types { get; } = new ObservableCollection<string> { "Todos", "Crear", "Actualizar", "Eliminar" };
-    
     private string _selectedType = "Todos";
     public string SelectedType
     {
@@ -30,6 +38,9 @@ public class AuditViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Propiedad para filtrar por el nombre y apellidos del usuario que ha realizado la acción
+    /// </summary>
     private string _filterName = "";
     public string FilterName
     {
@@ -44,6 +55,9 @@ public class AuditViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Propiedad para filtrar por Id del documento al que se le ha aplicado la acción
+    /// </summary>
     private string _filterId = "";
     public string FilterId
     {
@@ -57,20 +71,9 @@ public class AuditViewModel : ViewModelBase
         }
     }
 
-    public ObservableCollection<string> Collections { get; } = new ObservableCollection<string> { "Reserva", "Habitación", "Usuarios" };
-    private string _selectedCollection = "Reserva";
-    public string SelectedCollection
-    {
-        get => _selectedCollection;
-        set { 
-            if (SetProperty(ref _selectedCollection, value))
-            {
-                CurrentPage = 1;
-                ApplyFiltersAndPagination();
-            } 
-        }
-    }
-
+    /// <summary>
+    /// Propiedad correspondiente a la página actual
+    /// </summary>
     private int _currentPage = 1;
     public int CurrentPage
     {
@@ -79,6 +82,9 @@ public class AuditViewModel : ViewModelBase
         { if (SetProperty(ref _currentPage, value)) ApplyPagination(); }
     }
     
+    /// <summary>
+    /// Propiedad correspondiente a la cantidad de registros por página
+    /// </summary>
     private int _pageSize = 10;
     public int PageSize
     {
@@ -86,21 +92,40 @@ public class AuditViewModel : ViewModelBase
         set { if (SetProperty(ref _pageSize, value)) ApplyPagination(); }
     }
         
+    /// <summary>
+    /// Total de registros a mostrar
+    /// </summary>
     private int _totalItems = 0;
         
+    /// <summary>
+    /// Total de páginas necesarias para mostrar los registros
+    /// </summary>
     public int TotalPages => (int)Math.Ceiling((double)_totalItems / PageSize);
         
+    /// <summary>
+    /// Propiedades para saber si hay página siguiente y página previa
+    /// </summary>
     public bool HasPreviousPage => CurrentPage > 1;
     public bool HasNextPage => CurrentPage < TotalPages;
         
+    /// <summary>
+    /// Comandos para la paginación
+    /// </summary>
     public ICommand FirstPageCommand { get; }
     public ICommand PreviousPageCommand { get; }
     public ICommand NextPageCommand { get; }
     public ICommand LastPageCommand { get; }
     public ICommand GoToPageCommand { get; }
     
+    /// <summary>
+    /// Lista de posibles cantidades de registros mostrados por página
+    /// </summary>
     public ObservableCollection<int> PageSizeOptions { get; } = new ObservableCollection<int> { 5, 10, 15, 20, 50 };
     
+    /// <summary>
+    /// Constructor
+    /// Carga los logs, inicia la lista de logs que se mostrarán y los comandos
+    /// </summary>
     public AuditViewModel()
     {
         _ = LoadAuditLogs();
@@ -114,11 +139,21 @@ public class AuditViewModel : ViewModelBase
         GoToPageCommand = new RelayCommand<string>(GoToPage, CanGoToPage);
     }
     
+    /// <summary>
+    /// Funciones para navegar entre las diferentes páginas de registros
+    /// </summary>
     private void GoToFirstPage() => CurrentPage = 1;
     private void GoToPreviousPage() => CurrentPage--;
     private void GoToNextPage() => CurrentPage++;
     private void GoToLastPage() => CurrentPage = TotalPages;
         
+    /// <summary>
+    /// Función para ir a una página en concreto
+    /// </summary>
+    /// 
+    /// <param name="pageNumber">
+    /// Número de la página a la que se quiere ir en formato texto
+    /// </param>
     private void GoToPage(string? pageNumber)
     {
         if (int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages)
@@ -127,11 +162,31 @@ public class AuditViewModel : ViewModelBase
         }
     }
         
+    /// <summary>
+    /// Función para saber si se puede navegar a una página en concreto
+    /// </summary>
+    /// 
+    /// <param name="pageNumber">
+    /// Número de la página en string
+    /// </param>
+    /// 
+    /// <returns>
+    /// Valor booleano:
+    ///     - true -> Puede navegar
+    ///     - false -> No puede navegar
+    /// </returns>
     private bool CanGoToPage(string? pageNumber)
     {
         return int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages;
     }
 
+    /// <summary>
+    /// Obtiene una lista filtrada de logs de reserva
+    /// </summary>
+    /// 
+    /// <returns>
+    /// Lista de logs de reserva
+    /// </returns>
     private List<BookingLogModel> GetFilteredLogs()
     {
         if (_allLogs == null || !_allLogs.Any()) return new List<BookingLogModel>();
@@ -139,6 +194,9 @@ public class AuditViewModel : ViewModelBase
         return _allLogs.Where(log => FilterLogs(log)).ToList();
     }
     
+    /// <summary>
+    /// Función para obtener los logs filtrados, cambiar el total de registros a mostrar y aplicar paginación
+    /// </summary>
     private void ApplyFiltersAndPagination()
     {
         var filtered = GetFilteredLogs();
@@ -146,6 +204,15 @@ public class AuditViewModel : ViewModelBase
         ApplyPagination();
     }
     
+    /// <summary>
+    /// Función que aplica la paginación
+    /// FLUJO:
+    /// - Obtiene lista de logs filtrados
+    /// - Obtiene los logs para la página a mostrar
+    /// - Vacía la lista actual que se muestra
+    /// - Añade los logs a mostrar en la lista
+    /// - Avisa a la interfaz para que actualice las propiedades
+    /// </summary>
     private void ApplyPagination()
     {
         var filtered = GetFilteredLogs();
@@ -168,7 +235,19 @@ public class AuditViewModel : ViewModelBase
         OnPropertyChanged(nameof(CurrentPage));
     }
     
-
+    /// <summary>
+    /// Función que filtra el log para saber si se deberá mostrar o no
+    /// </summary>
+    /// 
+    /// <param name="obj">
+    /// Log que se ha de filtrar
+    /// </param>
+    /// 
+    /// <returns>
+    /// Valor booleano:
+    ///     - true -> Se ha de mostrar el log
+    ///     - false -> No se ha de mostrar el log
+    /// </returns>
     private bool FilterLogs(object obj)
     {
         if (obj is not BookingLogModel log) return false;
@@ -187,20 +266,22 @@ public class AuditViewModel : ViewModelBase
             "Eliminar" => log.Action?.Equals("delete", StringComparison.OrdinalIgnoreCase) == true
         };
         
-        bool collectionMatch = SelectedCollection switch
-        {
-            "Todos" => true,
-            "Reserva" => log.Collections?.Equals("bookings", StringComparison.OrdinalIgnoreCase) == true,
-            "Habitación" => log.Collections?.Equals("rooms", StringComparison.OrdinalIgnoreCase) == true,
-            "Usuarios" => log.Collections?.Equals("users", StringComparison.OrdinalIgnoreCase) == true
-        };
-        
         bool nameMatch = Match(log.UserName, FilterName);
         bool idMatch = Match(log.DocumentId, FilterId);
         
-        return actionMatch && collectionMatch && nameMatch && idMatch;
+        return actionMatch && nameMatch && idMatch;
     }
 
+    /// <summary>
+    /// Función que carga los logs
+    /// FLUJO:
+    /// - Obtiene todos los logs de la API
+    /// - Obtiene los diferens IDs de usuarios y habitaciones
+    /// - Obtiene todas las habitaciones y usuarios que necesita
+    /// - Carga en cada log los datos que necesita
+    /// - Carga los logs en la lista de todos los logs
+    /// - Aplica filtros y paginación
+    /// </summary>
     private async Task LoadAuditLogs()
     {
         _allLogs.Clear();
