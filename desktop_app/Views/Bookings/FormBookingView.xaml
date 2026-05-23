@@ -51,6 +51,7 @@
                             <MenuItem Header="Cancelar reserva" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding CancelBookingCommand}"/>
                             <MenuItem Header="Check-in" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding CheckInCommand}"/>
                             <MenuItem Header="Check-out" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding CheckOutCommand}"/>
+                            <MenuItem Header="Reembolsar" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding NavigateToRefundCommand}"/>
                             <MenuItem Header="Pagos" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding NavigateToPaymentCommand}"/>
                         </ContextMenu>
                     </Button.ContextMenu>

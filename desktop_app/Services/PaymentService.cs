@@ -113,12 +113,12 @@ public class PaymentService
     public static async Task<Boolean> RefundBookingPayments(string reason, string bookingId)
     {
         var endpoint = $"payments/{bookingId}/refund";
-        var response = await CreateResponse(endpoint, new { reason = reason }, HttpMethod.Get);
+        var response = await CreateResponse(endpoint, new { reason = reason }, HttpMethod.Patch);
         var json = await response.Content.ReadAsStringAsync();
         var container = JsonConvert.DeserializeObject<JObject>(json);
-        var allCompleted = container["allSuccess"]?.ToObject<Boolean>();
+        var allCompleted = container["success"]?.ToObject<Boolean>();
 
-        return allCompleted != null;
+        return allCompleted == true;
     }
 
     /// <summary>

@@ -7,6 +7,7 @@ using desktop_app.Events;
 using desktop_app.Models;
 using desktop_app.Services;
 using desktop_app.Views;
+using desktop_app.Views.Bookings;
 using desktop_app.Views.BookingViews;
 
 namespace desktop_app.ViewModels.Booking
@@ -66,6 +67,7 @@ namespace desktop_app.ViewModels.Booking
             NavigateToDetailsCommand = new RelayCommand(NavigateToDetails);
             NavigateToPaymentCommand = new RelayCommand(NavigateToPayment);
             NavigateToLogsCommand = new RelayCommand(NavigateToLogs);
+            NavigateToRefundCommand = new RelayCommand(NavigateToRefund);
             DownloadInvoiceCommand = new AsyncRelayCommand(DownloadInvoiceAsync);
             CancelBookingCommand = new AsyncRelayCommand(Cancel);
             CheckInCommand = new AsyncRelayCommand(CheckIn);
@@ -232,6 +234,19 @@ namespace desktop_app.ViewModels.Booking
         }
         
         /// <summary>
+        /// Navega a la vista de devolución
+        /// </summary>
+        /// 
+        /// <param name="obj">
+        /// Parametro necesario para el evento
+        /// </param>
+        private void NavigateToRefund(object obj)
+        {
+            CurrentView = new RefundView();
+            RefundViewModel.Instance.BookingId = BookingId;
+        }
+        
+        /// <summary>
         /// Comando que navega de vuelta a la vista de reservas
         /// </summary>
         public ICommand ReturnCommand { get; } = new RelayCommand(_ => NavigationService.Instance.NavigateTo<BookingView>());
@@ -242,6 +257,7 @@ namespace desktop_app.ViewModels.Booking
         public ICommand NavigateToDetailsCommand { get; }
         public ICommand NavigateToPaymentCommand { get; }
         public ICommand NavigateToLogsCommand { get; }
+        public ICommand NavigateToRefundCommand { get; }
         public ICommand DownloadInvoiceCommand { get; }
         public ICommand CancelBookingCommand { get; }
         public ICommand CheckInCommand { get; }
@@ -268,5 +284,6 @@ namespace desktop_app.ViewModels.Booking
             var bookingWithInvoice = await BookingService.GetBookingAsync(booking.Id);
             return Path.Combine(Path.GetTempPath(), bookingWithInvoice.InvoiceId);
         }
+
     }
 }
