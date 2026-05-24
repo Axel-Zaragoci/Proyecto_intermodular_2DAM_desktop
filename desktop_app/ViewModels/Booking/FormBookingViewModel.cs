@@ -72,6 +72,8 @@ namespace desktop_app.ViewModels.Booking
             CancelBookingCommand = new AsyncRelayCommand(Cancel);
             CheckInCommand = new AsyncRelayCommand(CheckIn);
             CheckOutCommand = new AsyncRelayCommand(CheckOut);
+            Send24HCommand = new AsyncRelayCommand(send24HReminder);
+            Send48HCommand = new AsyncRelayCommand(send48HReminder);
         }
 
         /// <summary>
@@ -245,6 +247,38 @@ namespace desktop_app.ViewModels.Booking
             CurrentView = new RefundView();
             RefundViewModel.Instance.BookingId = BookingId;
         }
+
+        private async Task send24HReminder()
+        {
+            try
+            {
+                var result = await BookingService.SendReminder(BookingId, 24);
+                if (result)
+                {
+                    MessageBox.Show("Notificación enviada correctamente", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al enviar la notificación: ${ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        private async Task send48HReminder()
+        {
+            try
+            {
+                var result = await BookingService.SendReminder(BookingId, 48);
+                if (result)
+                {
+                    MessageBox.Show("Notificación enviada correctamente", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al enviar la notificación: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         
         /// <summary>
         /// Comando que navega de vuelta a la vista de reservas
@@ -262,6 +296,8 @@ namespace desktop_app.ViewModels.Booking
         public ICommand CancelBookingCommand { get; }
         public ICommand CheckInCommand { get; }
         public ICommand CheckOutCommand { get; }
+        public ICommand Send24HCommand { get; }
+        public ICommand Send48HCommand { get; }
         
         /// <summary>
         /// Obtiene la ruta para la factura

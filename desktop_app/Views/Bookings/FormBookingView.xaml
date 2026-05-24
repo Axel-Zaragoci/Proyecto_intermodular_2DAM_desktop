@@ -48,6 +48,8 @@
                     <Button.ContextMenu>
                         <ContextMenu Style="{StaticResource DropdownContextMenuStyle}">
                             <MenuItem Header="Factura" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding DownloadInvoiceCommand}"/>
+                            <MenuItem Header="Enviar recordatorio 24h" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding Send24HCommand}"/>
+                            <MenuItem Header="Enviar recordatorio 48h" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding Send48HCommand}"/>
                             <MenuItem Header="Cancelar reserva" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding CancelBookingCommand}"/>
                             <MenuItem Header="Check-in" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding CheckInCommand}"/>
                             <MenuItem Header="Check-out" Style="{StaticResource DropdownMenuItemStyle}" Command="{Binding CheckOutCommand}"/>
