@@ -64,7 +64,7 @@ public class BookingModelDifference
             differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 24H previas enviado", OldValue = oldBooking.ReminderSent24H ? "Si" : "No", NewValue = newBooking.ReminderSent24H ? "Si" : "No" });
         
         if (oldBooking.ReminderSent48H != newBooking.ReminderSent48H)
-            differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 28H previas enviado", OldValue = oldBooking.ReminderSent48H ? "Si" : "No", NewValue = newBooking.ReminderSent48H ? "Si" : "No" });
+            differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 48H previas enviado", OldValue = oldBooking.ReminderSent48H ? "Si" : "No", NewValue = newBooking.ReminderSent48H ? "Si" : "No" });
         
         if (oldBooking.PaymentStatus != newBooking.PaymentStatus)
             differences.Add(new BookingModelDifference { PropertyName = "Estado de pago", OldValue = oldBooking.PaymentStatus, NewValue = newBooking.PaymentStatus });
