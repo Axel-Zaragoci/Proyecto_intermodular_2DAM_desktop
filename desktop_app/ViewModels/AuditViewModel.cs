@@ -70,6 +70,57 @@ public class AuditViewModel : ViewModelBase
             } 
         }
     }
+    
+    /// <summary>
+    /// Lista de tipos de acciones de filtrado para fechas
+    /// </summary>
+    public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
+    /// <summary>
+    /// Propiedad para filtrar por fecha de inicio
+    /// </summary>
+    private DateTime _selectedDate = DateTime.Now;
+    public DateTime SelectedDate
+    {
+        get => _selectedDate;
+        set
+        {
+            if (SetProperty(ref _selectedDate, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
+    }
+    /// <summary>
+    /// Propiedad para el tipo de acción de filtrado para la fecha de log
+    /// </summary>
+    private string _selectedDateFilter = "Antes de";
+    public string SelectedDateFilter
+    {
+        get => _selectedDateFilter;
+        set
+        {
+            if (SetProperty(ref _selectedDateFilter, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
+    }
+    
+    public ObservableCollection<string> Collections { get; } = new ObservableCollection<string> { "Reserva", "Habitación", "Usuarios" };
+    private string _selectedCollection = "Reserva";
+    public string SelectedCollection
+    {
+        get => _selectedCollection;
+        set {
+            if (SetProperty(ref _selectedCollection, value))
+            {
+                CurrentPage = 1;
+                ApplyFiltersAndPagination();
+            }
+        }
+    }
 
     /// <summary>
     /// Propiedad correspondiente a la página actual
@@ -266,10 +317,41 @@ public class AuditViewModel : ViewModelBase
             "Eliminar" => log.Action?.Equals("delete", StringComparison.OrdinalIgnoreCase) == true
         };
         
+        bool collectionMatch = SelectedCollection switch
+        {
+            "Todos" => true,
+            "Reserva" => log.Collections?.Equals("bookings", StringComparison.OrdinalIgnoreCase) == true,
+            "Habitación" => log.Collections?.Equals("rooms", StringComparison.OrdinalIgnoreCase) == true,
+            "Usuarios" => log.Collections?.Equals("users", StringComparison.OrdinalIgnoreCase) == true
+        };
+        
+        bool dateMatch = true;
+        if (DateTime.TryParse(log.DateString, out DateTime logDate))
+        {
+            switch (SelectedDateFilter)
+            {
+                case "Fecha exacta":
+                    dateMatch = logDate.Date == SelectedDate.Date;
+                    break;
+                
+                case "Antes de":
+                    dateMatch = logDate.Date <= SelectedDate.Date;
+                    break;
+                
+                case "Después de":
+                    dateMatch = logDate.Date >= SelectedDate.Date;
+                    break;
+            }
+        }
+        else
+        {
+            dateMatch = false;
+        }
+        
         bool nameMatch = Match(log.UserName, FilterName);
         bool idMatch = Match(log.DocumentId, FilterId);
         
-        return actionMatch && nameMatch && idMatch;
+        return actionMatch && nameMatch && idMatch && dateMatch && collectionMatch;
     }
 
     /// <summary>
@@ -376,6 +458,10 @@ public class AuditViewModel : ViewModelBase
                 log.Differences = BookingModelDifference.GetDifferences(log.OldBooking ?? new BookingModel(), log.NewBooking ?? new BookingModel());
             }
             log.DifferenceString = String.Join("\n", log.Differences);
+            if (string.IsNullOrWhiteSpace(log.DifferenceString))
+            {
+                continue;
+            }
             _allLogs.Add(log);
         }
 

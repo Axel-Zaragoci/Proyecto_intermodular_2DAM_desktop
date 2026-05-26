@@ -46,7 +46,7 @@ public class CashPaymentsViewModel : ViewModelBase
     /// <summary>
     /// Total de precio que queda a pagar
     /// </summary>
-    public decimal TotalToPay => Booking?.TotalPrice - Booking?.TotalPaid ?? 0;
+    public decimal TotalToPay => Decimal.Max(Booking?.TotalPrice - Booking?.TotalPaid ?? 0, 0);
     
     /// <summary>
     /// Propiedad para el precio pagado
