@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="desktop_app.Views.FormHotelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:desktop_app.Views"
+             xmlns:viewModel="clr-namespace:desktop_app.ViewModels.Invoices"
+             mc:Ignorable="d"
+             d:DesignHeight="450" 
+             d:DesignWidth="800"
+             Style="{StaticResource UserControlBase}">
+    <UserControl.DataContext>
+        <viewModel:FormHotelViewModel></viewModel:FormHotelViewModel>
+    </UserControl.DataContext>
+    
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Border Style="{StaticResource HeaderWrapper}">
+            <StackPanel>
+                <TextBlock Text="Actualizar datos del hotel" Style="{StaticResource HeaderMainTitle}"/>
+            </StackPanel>
+        </Border>
+        
+        <StackPanel Grid.Row="1" Style="{StaticResource BtnWrapper}">
+            <Button Content="Volver" Style="{StaticResource RedReturnBtn}" Command="{Binding ReturnCommand}"/>
+            <Button Content="Guardar" Style="{StaticResource SaveBtn}" Command="{Binding SaveCommand}"/>
+        </StackPanel>
+        
+        <Grid Grid.Column="0" Grid.Row="2" Margin="0 15 15 0" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0 0 30 0">
+                <Label Content="CIF: " Target="CIFTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="CIFTextBox" Text="{Binding Hotel.cif, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 0 30 0">
+                <Label Content="Dirección: " Target="AddressTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="AddressTextBox" Text="{Binding Hotel.address, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2" Grid.Column="0" Margin="0 0 30 0">
+                <Label Content="Ciudad: " Target="CityTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="CityTextBox" Text="{Binding Hotel.city, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="3" Grid.Column="0" Margin="0 0 30 0">
+                <Label Content="Email: " Target="EmailTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="EmailTextBox" Text="{Binding Hotel.email, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <Label Content="Nombre del hotel: " Target="HotelTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="HotelTextBox" Text="{Binding Hotel.name, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Label Content="Código postal: " Target="PostalCodeTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="PostalCodeTextBox" Text="{Binding Hotel.postalCode, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2" Grid.Column="1">
+                <Label Content="País: " Target="CountryTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="CountryTextBox" Text="{Binding Hotel.country, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="3" Grid.Column="1">
+                <Label Content="Número de teléfono: " Target="PhoneTextBox" Style="{StaticResource LabelForm}"/>
+                <TextBox x:Name="PhoneTextBox" Text="{Binding Hotel.phone, Mode=TwoWay}" Style="{StaticResource TextBoxForm}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

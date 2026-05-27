@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
-using System.Net.Http.Json;
 using desktop_app.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace desktop_app.Services
 {
@@ -16,12 +16,22 @@ namespace desktop_app.Services
         /// </returns>
         public static async Task<List<BookingModel>> GetAllBookingsAsync()
         {
-            return (
-                await (
-                    await CreateResponse("", new Object(), HttpMethod.Get)).Content.ReadFromJsonAsync<List<BookingModel>>()
-                ) ?? new List<BookingModel>();
+            var response = await CreateResponse("", new Object(), HttpMethod.Get);
+            var content = await response.Content.ReadAsStringAsync();
+    
+            var bookings = JsonConvert.DeserializeObject<List<BookingModel>>(content);
+    
+            return bookings ?? new List<BookingModel>();
         }
 
+        public static async Task<BookingModel> GetBookingAsync(string bookingId)
+        {
+            var response = await CreateResponse(bookingId, new Object(), HttpMethod.Get);
+            var content = await response.Content.ReadAsStringAsync();
+    
+            var booking = JsonConvert.DeserializeObject<BookingModel>(content);
+            return booking ?? new BookingModel();
+        }
         
         /// <summary>
         /// Borra una reserva
@@ -58,20 +68,20 @@ namespace desktop_app.Services
         public static async Task<BookingModel?> UpdateBookingAsync(BookingModel booking)
         {
             var payload = new {
-                checkInDate = DateTime.SpecifyKind(booking.CheckInDate, DateTimeKind.Utc),
-                checkOutDate = DateTime.SpecifyKind(booking.CheckOutDate, DateTimeKind.Utc),
-                guests = booking.Guests};
+                checkInDate = DateTime.SpecifyKind(booking.CheckInDate.Date, DateTimeKind.Utc),
+                checkOutDate = DateTime.SpecifyKind(booking.CheckOutDate.Date, DateTimeKind.Utc),
+                guests = booking.Guests
+            };
 
             var response = await CreateResponse(booking.Id, payload, HttpMethod.Patch);
-            
-            var updatedBooking = await response.Content.ReadFromJsonAsync<BookingModel>();
+            var content = await response.Content.ReadAsStringAsync();
+            var updatedBooking = JsonConvert.DeserializeObject<BookingModel>(content);
 
             if (updatedBooking != null)
             {
-                updatedBooking.CheckInDate = DateTime.SpecifyKind(updatedBooking.CheckInDate, DateTimeKind.Utc).ToLocalTime();
-                updatedBooking.CheckOutDate = DateTime.SpecifyKind(updatedBooking.CheckOutDate, DateTimeKind.Utc).ToLocalTime();
-                updatedBooking.PayDate = DateTime.SpecifyKind(updatedBooking.PayDate, DateTimeKind.Utc).ToLocalTime();
-            }
+                updatedBooking.CheckInDate = updatedBooking.CheckInDate.ToUniversalTime();
+                updatedBooking.CheckOutDate = updatedBooking.CheckOutDate.ToUniversalTime();
+                updatedBooking.CreationDate = updatedBooking.CreationDate.ToUniversalTime();            }
             
             return updatedBooking;
         }
@@ -90,11 +100,17 @@ namespace desktop_app.Services
         /// </returns>
         public static async Task<BookingModel?> CreateBookingAsync(BookingModel booking)
         {
-            var payload = new {client = booking.Client, room = booking.Room, checkInDate = booking.CheckInDate, checkOutDate = booking.CheckOutDate, guests = booking.Guests};
+            var payload = new {
+                client = booking.Client,
+                room = booking.Room,
+                checkInDate = DateTime.SpecifyKind(booking.CheckInDate.Date, DateTimeKind.Utc),
+                checkOutDate = DateTime.SpecifyKind(booking.CheckOutDate.Date, DateTimeKind.Utc),
+                guests = booking.Guests
+            };
 
             var response = await CreateResponse("", payload, HttpMethod.Post);
-            
-            var createdBooking = await response.Content.ReadFromJsonAsync<BookingModel>();
+            var content = await response.Content.ReadAsStringAsync();
+            var createdBooking = JsonConvert.DeserializeObject<BookingModel>(content);
 
             return createdBooking;
         }
@@ -114,12 +130,61 @@ namespace desktop_app.Services
         public static async Task<BookingModel?> CancelBookingAsync(string bookingId)
         {
             var response = await CreateResponse($"{bookingId}/cancel", new Object(), HttpMethod.Patch);
-            
-            var cancelBooking = await response.Content.ReadFromJsonAsync<BookingModel>();
+            var content = await response.Content.ReadAsStringAsync();
+            var cancelBooking = JsonConvert.DeserializeObject<BookingModel>(content);
 
             return cancelBooking;
         }
 
+        /// <summary>
+        /// Realiza el check-in de una reserva
+        /// </summary>
+        /// 
+        /// <param name="bookingId">
+        /// ID de la reserva
+        /// </param>
+        /// 
+        /// <returns>
+        /// Devuelve la reserva con check-in devuelta por la base de datos
+        /// </returns>
+        public static async Task<BookingModel?> CheckInBookingAsync(string bookingId)
+        {
+            var response = await CreateResponse($"{bookingId}/check-in", new Object(), HttpMethod.Patch);
+            var content = await response.Content.ReadAsStringAsync();
+            var checkedInBooking = JsonConvert.DeserializeObject<BookingModel>(content);
+
+            return checkedInBooking;
+        }
+        
+        /// <summary>
+        /// Realiza el check-out de una reserva
+        /// </summary>
+        /// 
+        /// <param name="bookingId">
+        /// ID de la reserva
+        /// </param>
+        /// 
+        /// <returns>
+        /// Devuelve la reserva con check-out devuelta por la base de datos
+        /// </returns>
+        public static async Task<BookingModel?> CheckOutBookingAsync(string bookingId)
+        {
+            var response = await CreateResponse($"{bookingId}/check-out", new Object(), HttpMethod.Patch);
+            var content = await response.Content.ReadAsStringAsync();
+            var checkedOutBooking = JsonConvert.DeserializeObject<BookingModel>(content);
+
+            return checkedOutBooking;
+        }
+
+        public static async Task<Boolean> SendReminder(string bookingId, int hoursBefore)
+        {
+            var response = await CreateResponse($"{bookingId}/reminder", new { hoursBefore = hoursBefore }, HttpMethod.Post);
+            var json = await response.Content.ReadAsStringAsync();
+            var container = JsonConvert.DeserializeObject<JObject>(json);
+            var completed = container["message"]?.ToObject<String>();
+
+            return completed == "Notificación enviada";
+        }
         
         /// <summary>
         /// Método que crea la solicitud, obtiene la respuesta y verifica los errores
@@ -143,10 +208,10 @@ namespace desktop_app.Services
         {
             string url = $"{ApiService.BaseUrl}booking/{endpoint}";
             
-            var request = new HttpRequestMessage(method, url)
-            {
-                Content = JsonContent.Create(payload)
-            };
+            var request = new HttpRequestMessage(method, url);
+            
+            var json = JsonConvert.SerializeObject(payload);
+            request.Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             var response = await ApiService._httpClient.SendAsync(request);
 
@@ -172,14 +237,14 @@ namespace desktop_app.Services
         /// <exception cref="Exception">
         /// Lanza excepciones con los errores personalizados que provienen de la API en caso de error
         /// </exception>
-        private static Task HandleError (HttpResponseMessage response)
+        private static Task HandleError(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
                 string error = response.Content.ReadAsStringAsync().Result;
                 Console.WriteLine("Error en la API de booking: " + error);
                 var value = JsonConvert.DeserializeObject<Dictionary<string, string>>(error);
-                if (value != null)
+                if (value != null && value.ContainsKey("error"))
                 {
                     var errors = value["error"];
                     string errString = String.Join("\n", errors.Split(", "));

@@ -50,6 +50,9 @@ namespace desktop_app.Services
 
             if (!doc.RootElement.TryGetProperty("rol", out var rolEl)) throw new Exception("Campo rol vacío.");
 
+            if (!doc.RootElement.TryGetProperty("id", out var idEl)) throw new Exception("ID vacío.");
+
+            TokenStore.UserId = idEl.GetString();
             TokenStore.AccessToken = tokenEl.GetString();
 
             return rolEl.GetString();

@@ -1,0 +1,49 @@
+﻿using Newtonsoft.Json;
+
+namespace desktop_app.Models;
+
+public class BookingLogModel
+{
+    [JsonProperty ("collections")]
+    public string Collections { get; set; }
+    
+    [JsonProperty("action")]
+    public string Action { get; set; }
+    
+    [JsonProperty ("documentId")]
+    public string DocumentId { get; set; }
+
+    [JsonProperty("userId")] 
+    public string UserId { get; set; } = "";
+    
+    [JsonProperty ("createdAt")]
+    public DateTime CreatedAt { get; set; }
+    
+    [JsonProperty ("oldBooking")]
+    public BookingModel? OldBooking { get; set; }
+    
+    [JsonProperty ("newBooking")]
+    public BookingModel? NewBooking { get; set; }
+    
+    [JsonIgnore]
+    public string UserName { get; set; }
+    
+    [JsonIgnore]
+    public string UserDni { get; set; }
+    
+    [JsonIgnore]
+    public string UserNameDni { get; set; }
+    
+    
+    [JsonIgnore]
+    public string Room { get; set; }
+    
+    [JsonIgnore]
+    public List<BookingModelDifference> Differences { get; set; }
+    
+    [JsonIgnore]
+    public string DateString => CreatedAt.ToString("dd-MM-yyyy HH:mm:ss");
+    
+    [JsonIgnore]
+    public string DifferenceString { get; set; }
+}
