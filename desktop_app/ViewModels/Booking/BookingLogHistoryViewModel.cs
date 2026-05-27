@@ -6,9 +6,15 @@ namespace desktop_app.ViewModels.Booking;
 
 public class BookingLogHistoryViewModel : ViewModelBase
 {
+    /// <summary>
+    /// Implementación del patrón singleton
+    /// </summary>
     private static BookingLogHistoryViewModel? _instance;
     public static BookingLogHistoryViewModel Instance => _instance ??= new BookingLogHistoryViewModel();
     
+    /// <summary>
+    /// Propiedad para guardar el ID de la reserva cuyos logs se van a manejar
+    /// </summary>
     private string _bookingId = "";
     public string BookingId
     {
@@ -21,15 +27,31 @@ public class BookingLogHistoryViewModel : ViewModelBase
         } 
     }
     
+    /// <summary>
+    /// Listados de logs y pagos
+    /// </summary>
     public ObservableCollection<BookingLogModel> Logs { get; }
     public ObservableCollection<BasePaymentModel> Payments { get; }
 
+    /// <summary>
+    /// Constructor
+    /// Se inician las listas de pagos y logs
+    /// </summary>
     public BookingLogHistoryViewModel()
     {
         Logs = new ObservableCollection<BookingLogModel>();
         Payments = new ObservableCollection<BasePaymentModel>();
     }
 
+    /// <summary>
+    /// Carga de los logs
+    /// Obtiene los logs del servicio
+    /// Consigue una lista sin duplicados de IDs de clientes y habitaciones de las reservas
+    /// Obtiene los objetos de habitaciones y usuarios
+    /// Completa los datos de las reservas y los logs
+    /// Obtiene las diferencias entre las reservas antes y después 
+    /// Carga todos los datos en la lista
+    /// </summary>
     public async Task LoadLogs()
     {
         Logs.Clear();
@@ -118,6 +140,11 @@ public class BookingLogHistoryViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Carga los pagos
+    /// Obtiene la lista de pagos del servicio
+    /// Añade los pagos a la lista de este viewmodel
+    /// </summary>
     public async Task LoadPayments()
     {
         Payments.Clear();

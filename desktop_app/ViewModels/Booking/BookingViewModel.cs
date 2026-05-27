@@ -1,7 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using desktop_app.Commands;
 using desktop_app.Events;
@@ -23,6 +21,9 @@ namespace desktop_app.ViewModels.Booking
         /// </summary>
         public ObservableCollection<BookingModel> Bookings { get; }
 
+        /// <summary>
+        /// Propiedad de la página actual
+        /// </summary>
         private int _currentPage = 1;
         public int CurrentPage
         {
@@ -30,6 +31,9 @@ namespace desktop_app.ViewModels.Booking
             set {if(SetProperty(ref _currentPage, value)) ApplyPagination();}
         }
 
+        /// <summary>
+        /// Propiedad que maneja la cantidad de registros por página
+        /// </summary>
         private int _pageSize = 10;
         public int PageSize
         {
@@ -37,19 +41,34 @@ namespace desktop_app.ViewModels.Booking
             set { if (SetProperty(ref _pageSize, value)) ApplyPagination(); }
         }
         
+        /// <summary>
+        /// Total de registros a mostrar
+        /// </summary>
         private int _totalItems = 0;
         
+        /// <summary>
+        /// Total de páginas
+        /// </summary>
         public int TotalPages => (int)Math.Ceiling((double)_totalItems / PageSize);
         
+        /// <summary>
+        /// Valores para permitir la navegación entre páginas de datos
+        /// </summary>
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
         
+        /// <summary>
+        /// Comandos para la paginación
+        /// </summary>
         public ICommand FirstPageCommand { get; }
         public ICommand PreviousPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand LastPageCommand { get; }
         public ICommand GoToPageCommand { get; }
         
+        /// <summary>
+        /// Posibles cantidades de registros por página
+        /// </summary>
         public ObservableCollection<int> PageSizeOptions { get; } = new ObservableCollection<int> { 5, 10, 15, 20, 50 };
 
         /// <summary>
@@ -75,7 +94,9 @@ namespace desktop_app.ViewModels.Booking
         /// </summary>
         public ICommand ReloadBookingCommand { get; }
 
-
+        /// <summary>
+        /// Lista de posibles estados y la propiedad para poder filtrar por estado en la vista
+        /// </summary>
         public ObservableCollection<string> Statuses { get; } = new ObservableCollection<string> { "Abierta", "Cancelada", "Check-in", "Check-out", "Todos" };
         private string _selectedStatus = "Todos";
         public string SelectedStatus
@@ -91,6 +112,9 @@ namespace desktop_app.ViewModels.Booking
             }
         }
         
+        /// <summary>
+        /// Propiedad para filtrar por nombre del cliente
+        /// </summary>
         private string _filterName = "";
         public string FilterName
         {
@@ -105,7 +129,9 @@ namespace desktop_app.ViewModels.Booking
             }
         }
 
-        
+        /// <summary>
+        /// Propiedad para filtrar por número de habitación
+        /// </summary>
         private string _filterRoom = "";
         public string FilterRoom
         {
@@ -120,6 +146,9 @@ namespace desktop_app.ViewModels.Booking
             }
         }
 
+        /// <summary>
+        /// Propiedad para filtrar por fecha de inicio
+        /// </summary>
         private DateTime _selectedStartDate = DateTime.Now;
         public DateTime SelectedStartDate
         {
@@ -134,6 +163,9 @@ namespace desktop_app.ViewModels.Booking
             }
         }
         
+        /// <summary>
+        /// Propiedad para filtrar por fecha de fin
+        /// </summary>
         private DateTime _selectedEndDate = DateTime.Now;
         public DateTime SelectedEndDate
         {
@@ -148,8 +180,14 @@ namespace desktop_app.ViewModels.Booking
             }
         }
         
+        /// <summary>
+        /// Lista de tipos de acciones de filtrado para fechas
+        /// </summary>
         public ObservableCollection<string> DateFilterTypes { get; } = new ObservableCollection<string>() { "Fecha exacta" ,"Antes de", "Después de" };
         
+        /// <summary>
+        /// Propiedad para el tipo de acción de filtrado para la fecha de inicio
+        /// </summary>
         private string _selectedStartDateFilter = "Después de";
         public string SelectedStartDateFilter
         {
@@ -164,6 +202,9 @@ namespace desktop_app.ViewModels.Booking
             }
         }
         
+        /// <summary>
+        /// Propiedad para el tipo de acción de filtrado para la fecha de fin
+        /// </summary>
         private string _selectedEndDateFilter = "Después de";
         public string SelectedEndDateFilter
         {
@@ -205,11 +246,18 @@ namespace desktop_app.ViewModels.Booking
             BookingEvents.OnBookingChanged += async () => await LoadBookingsAsync();
         }
 
+        /// <summary>
+        /// Funciones para saber si se puede navegar en la paginación
+        /// </summary>
         private void GoToFirstPage() => CurrentPage = 1;
         private void GoToPreviousPage() => CurrentPage--;
         private void GoToNextPage() => CurrentPage++;
         private void GoToLastPage() => CurrentPage = TotalPages;
         
+        /// <summary>
+        /// Función para navegar a una página en concreto de los datos
+        /// </summary>
+        /// <param name="pageNumber"></param>
         private void GoToPage(string? pageNumber)
         {
             if (int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages)
@@ -218,11 +266,31 @@ namespace desktop_app.ViewModels.Booking
             }
         }
         
+        /// <summary>
+        /// Función para saber si puede navegar a una página específica
+        /// </summary>
+        /// 
+        /// <param name="pageNumber">
+        /// Número de página a la que quiere navegar en texto
+        /// </param>
+        /// 
+        /// <returns>
+        /// Valor booleano:
+        ///     - true -> Puede navegar
+        ///     - false -> No puede navegar
+        /// </returns>
         private bool CanGoToPage(string? pageNumber)
         {
             return int.TryParse(pageNumber, out int page) && page >= 1 && page <= TotalPages;
         }
         
+        /// <summary>
+        /// Obtiene la lista de reservas filtradas
+        /// </summary>
+        /// 
+        /// <returns>
+        /// Lista de reservas pasadas por los filtros seleccionados
+        /// </returns>
         private List<BookingModel> GetFilteredBookings()
         {
             if (_allBookings == null || !_allBookings.Any())
@@ -231,6 +299,9 @@ namespace desktop_app.ViewModels.Booking
             return _allBookings.Where(booking => FilterBookings(booking)).ToList();
         }
         
+        /// <summary>
+        /// Aplica los filtros y pagina los resultados
+        /// </summary>
         private void ApplyFiltersAndPagination()
         {
             var filtered = GetFilteredBookings();
@@ -238,6 +309,9 @@ namespace desktop_app.ViewModels.Booking
             ApplyPagination();
         }
 
+        /// <summary>
+        /// Aplica la paginación obteniendo las siguientes reservas según la página
+        /// </summary>
         private void ApplyPagination()
         {
             var filtered = GetFilteredBookings();
@@ -260,6 +334,19 @@ namespace desktop_app.ViewModels.Booking
             OnPropertyChanged(nameof(CurrentPage));
         }
         
+        /// <summary>
+        /// Filtra la reserva
+        /// </summary>
+        /// 
+        /// <param name="obj">
+        /// Reserva a filtrar
+        /// </param>
+        /// 
+        /// <returns>
+        /// Valor booleano:
+        ///     - true -> La reserva pasa los filtros
+        ///     - false -> La reserva no pasa los filtros
+        /// </returns>
         private bool FilterBookings(object obj)
         {
             if (obj is not BookingModel booking) return false;

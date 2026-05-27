@@ -26,7 +26,7 @@
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Margin="0 0 20 0">
                             <Label Content="ID" Style="{StaticResource LabelForm}"/>
-                            <TextBox Width="225" Text="{Binding FilterId, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
+                            <TextBox Width="175" Text="{Binding FilterId, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxForm}"/>
                         </StackPanel>
                         
                         <StackPanel Margin="0 0 20 0">
@@ -36,12 +36,20 @@
 
                         <StackPanel Margin="0 0 20 0">
                             <Label Content="Acción" Style="{StaticResource LabelForm}"/>
-                            <ComboBox Width="175" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" Style="{StaticResource DropdownStyle}"/>
+                            <ComboBox Width="150" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" Style="{StaticResource DropdownStyle}"/>
                         </StackPanel>
-
-                        <StackPanel>
+                        
+                        <StackPanel Margin="0 0 20 0">
                             <Label Content="Colección" Style="{StaticResource LabelForm}"/>
-                            <ComboBox Width="175" ItemsSource="{Binding Collections}" SelectedItem="{Binding SelectedCollection}" Style="{StaticResource DropdownStyle}"/>
+                            <ComboBox Width="125" ItemsSource="{Binding Collections}" SelectedItem="{Binding SelectedCollection}" Style="{StaticResource DropdownStyle}"/>
+                        </StackPanel>
+                        
+                        <StackPanel>
+                            <Label Content="Fecha de inicio" Style="{StaticResource LabelForm}"/>
+                            <DockPanel>
+                                <DatePicker SelectedDate="{Binding SelectedDate, Mode=TwoWay}" Style="{StaticResource DatePickerForm}" DockPanel.Dock="Left" Margin="0 0 10 0"/>
+                                <ComboBox ItemsSource="{Binding DateFilterTypes}" SelectedItem="{Binding SelectedDateFilter}" Style="{StaticResource DropdownStyle}" DockPanel.Dock="Right"/>
+                            </DockPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>

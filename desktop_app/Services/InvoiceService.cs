@@ -8,6 +8,18 @@ namespace desktop_app.Services;
 
 public class InvoiceService
 {
+    /// <summary>
+    /// Solicita la factura a la API
+    /// </summary>
+    /// 
+    /// <param name="booking">
+    /// Objeto de reserva de la que se solicita la facutra
+    /// </param>
+    /// 
+    /// <returns>
+    /// Array de bytes correspondientes al archivo pdf de la factura
+    /// </returns>
+    /// <exception cref="Exception"></exception>
     public static async Task<byte[]> DownloadPdfAsync(BookingModel booking)
     {
         var response = await CreateResponse($"{booking.Id}/invoice", new Object(), HttpMethod.Get);
@@ -23,6 +35,13 @@ public class InvoiceService
         return pdfBytes;
     }
 
+    /// <summary>
+    /// Notifica a la API que envíe un email con la factura 
+    /// </summary>
+    /// 
+    /// <param name="booking">
+    /// Objeto de la reserva cuya factura debe ser enviada
+    /// </param>
     public static async Task SendPdfAsync(BookingModel booking)
     {
         var response = await CreateResponse($"{booking.Id}/sendInvoice", new Object(), HttpMethod.Get);
@@ -36,7 +55,7 @@ public class InvoiceService
     /// 
     /// <param name="endpoint">
     /// String del endpoint al que se debe comunicar
-    /// Como este es el manejador de reservas ya empieza la URL con el acceso al router de reservas de la API
+    /// Como las facturas se relacionan con las reservas, la url empieza automática con el router de los mismos
     /// </param>
     /// <param name="payload">
     /// Objeto con los datos que se deben de enviar en el body de la solicitud a la API

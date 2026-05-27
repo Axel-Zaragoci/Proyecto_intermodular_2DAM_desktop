@@ -6,6 +6,17 @@ namespace desktop_app.Services;
 
 public class BookingLogService
 {
+    /// <summary>
+    /// Obtiene los logs de una reserva
+    /// </summary>
+    /// 
+    /// <param name="bookingId">
+    /// ID de la reserva
+    /// </param>
+    /// 
+    /// <returns>
+    /// Promesa de una lista con los logs de la reserva
+    /// </returns>
     public static async Task<List<BookingLogModel>> GetBookingLogs(string bookingId)
     {
         var response = await CreateResponse($"booking/{bookingId}/audit", new Object(), HttpMethod.Get);
@@ -16,6 +27,13 @@ public class BookingLogService
         return logs ?? new List<BookingLogModel>();
     }
 
+    /// <summary>
+    /// Obtiene todos los logs
+    /// </summary>
+    /// 
+    /// <returns>
+    /// Promesa de una lista con todos los logs
+    /// </returns>
     public static async Task<List<BookingLogModel>> GetLogs()
     {
         var response = await CreateResponse($"audit/", new Object(), HttpMethod.Get);

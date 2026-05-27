@@ -8,9 +8,15 @@ namespace desktop_app.ViewModels.Booking;
 
 public class CashPaymentsViewModel : ViewModelBase
 {
+    /// <summary>
+    /// Implementacion del patrón singleton
+    /// </summary>
     private static CashPaymentsViewModel? _instance;
     public static CashPaymentsViewModel Instance => _instance ??= new CashPaymentsViewModel();
 
+    /// <summary>
+    /// Propiedad para almacenar el ID de la reserva cuyo pago se quiere registrar
+    /// </summary>
     private string _bookingId = "";
     public string BookingId
     {
@@ -23,6 +29,9 @@ public class CashPaymentsViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Objeto de la reserva cuyo pago se quiere registrar
+    /// </summary>
     private BookingModel _booking;
     public BookingModel Booking
     {
@@ -34,8 +43,14 @@ public class CashPaymentsViewModel : ViewModelBase
         }
     }
 
-    public decimal TotalToPay => Booking?.TotalPrice - Booking?.TotalPaid ?? 0;
+    /// <summary>
+    /// Total de precio que queda a pagar
+    /// </summary>
+    public decimal TotalToPay => Decimal.Max(Booking?.TotalPrice - Booking?.TotalPaid ?? 0, 0);
     
+    /// <summary>
+    /// Propiedad para el precio pagado
+    /// </summary>
     private decimal _pricePaid;
     public decimal PricePaid
     {
@@ -47,10 +62,15 @@ public class CashPaymentsViewModel : ViewModelBase
         }
     }
     
-    public decimal ChangeGiven => AmountReceived - PricePaid;
+    /// <summary>
+    /// Propiedad del cambio a entregar
+    /// </summary>
+    public decimal ChangeGiven => decimal.Max(AmountReceived - PricePaid, 0);
 
+    /// <summary>
+    /// Propiedad para la cantidad entregada por el cliente
+    /// </summary>
     private decimal _amountReceived;
-
     public decimal AmountReceived
     {
         get => _amountReceived;
@@ -60,7 +80,14 @@ public class CashPaymentsViewModel : ViewModelBase
             RefreshAll();
         }
     }
-
+    
+    /// <summary>
+    /// Constructor
+    ///
+    /// Inicia los valores de precio pagado y cantidad recibida
+    /// Carga el objeto de la reserva
+    /// Inicia el comando de guardar pago
+    /// </summary>
     public CashPaymentsViewModel()
     {
         PricePaid = 0;
@@ -69,11 +96,16 @@ public class CashPaymentsViewModel : ViewModelBase
         SaveCommand = new AsyncRelayCommand(SavePayment);
     }
 
-
-
-
+    /// <summary>
+    /// Comando para guardar el pago
+    /// </summary>
     public ICommand SaveCommand { get; }
 
+    /// <summary>
+    /// Función que guarda el pago
+    /// Crea el pago, completa sus datos con los de las propiedades y la guarda en la api
+    /// Vuelve a cargar la reserva para obtener sus campos actualizados después del pago
+    /// </summary>
     private async Task SavePayment()
     {
         try
@@ -95,6 +127,9 @@ public class CashPaymentsViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Carga el objeto de la reserva desde la api
+    /// </summary>
     public async Task LoadBooking()
     {
         if (BookingId == "")
@@ -106,6 +141,9 @@ public class CashPaymentsViewModel : ViewModelBase
         RefreshAll();
     }
 
+    /// <summary>
+    /// Indica a la vista que debe refrescar todos sus datos
+    /// </summary>
     private void RefreshAll()
     {
         OnPropertyChanged(nameof(Booking));

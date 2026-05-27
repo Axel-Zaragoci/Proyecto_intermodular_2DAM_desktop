@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using desktop_app.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace desktop_app.Services
 {
@@ -144,7 +145,7 @@ namespace desktop_app.Services
         /// </param>
         /// 
         /// <returns>
-        /// Devuelve la reserva cancelada devuelta por la base de datos
+        /// Devuelve la reserva con check-in devuelta por la base de datos
         /// </returns>
         public static async Task<BookingModel?> CheckInBookingAsync(string bookingId)
         {
@@ -164,7 +165,7 @@ namespace desktop_app.Services
         /// </param>
         /// 
         /// <returns>
-        /// Devuelve la reserva cancelada devuelta por la base de datos
+        /// Devuelve la reserva con check-out devuelta por la base de datos
         /// </returns>
         public static async Task<BookingModel?> CheckOutBookingAsync(string bookingId)
         {
@@ -173,6 +174,16 @@ namespace desktop_app.Services
             var checkedOutBooking = JsonConvert.DeserializeObject<BookingModel>(content);
 
             return checkedOutBooking;
+        }
+
+        public static async Task<Boolean> SendReminder(string bookingId, int hoursBefore)
+        {
+            var response = await CreateResponse($"{bookingId}/reminder", new { hoursBefore = hoursBefore }, HttpMethod.Post);
+            var json = await response.Content.ReadAsStringAsync();
+            var container = JsonConvert.DeserializeObject<JObject>(json);
+            var completed = container["message"]?.ToObject<String>();
+
+            return completed == "Notificación enviada";
         }
         
         /// <summary>

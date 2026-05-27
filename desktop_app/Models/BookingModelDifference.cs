@@ -10,7 +10,22 @@ public class BookingModelDifference
     {
         return $"{PropertyName}: {OldValue} -> {NewValue}";
     }
-
+    
+    /// <summary>
+    /// Obtiene las diferencias entre 2 reservas
+    /// Utilizado para obtener las diferencias en los logs
+    /// </summary>
+    /// 
+    /// <param name="oldBooking">
+    /// Reserva antes de la acción logueada
+    /// </param>
+    /// <param name="newBooking">
+    /// Reserva después de la acción logueada
+    /// </param>
+    /// 
+    /// <returns>
+    /// Cadena de texto con las diferencias mostrando el valor anterior y el nuevo
+    /// </returns>
     public static List<BookingModelDifference> GetDifferences(BookingModel oldBooking, BookingModel newBooking)
     {
         var differences = new List<BookingModelDifference>();
@@ -49,7 +64,7 @@ public class BookingModelDifference
             differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 24H previas enviado", OldValue = oldBooking.ReminderSent24H ? "Si" : "No", NewValue = newBooking.ReminderSent24H ? "Si" : "No" });
         
         if (oldBooking.ReminderSent48H != newBooking.ReminderSent48H)
-            differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 28H previas enviado", OldValue = oldBooking.ReminderSent48H ? "Si" : "No", NewValue = newBooking.ReminderSent48H ? "Si" : "No" });
+            differences.Add(new BookingModelDifference { PropertyName = "Recordatorio 48H previas enviado", OldValue = oldBooking.ReminderSent48H ? "Si" : "No", NewValue = newBooking.ReminderSent48H ? "Si" : "No" });
         
         if (oldBooking.PaymentStatus != newBooking.PaymentStatus)
             differences.Add(new BookingModelDifference { PropertyName = "Estado de pago", OldValue = oldBooking.PaymentStatus, NewValue = newBooking.PaymentStatus });
